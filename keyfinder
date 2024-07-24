@@ -1,0 +1,78 @@
+#!/usr/bin/python3
+
+import argparse
+import os
+import re
+
+from cryptography.hazmat.primitives import serialization
+
+rex_t = r"-----BEGIN[A-Z ]* PRIVATE KEY-----.*?-----END[A-Z ]* PRIVATE KEY-----"
+rex = re.compile(rex_t, flags=re.MULTILINE | re.DOTALL)
+# rex_b = b"-----BEGIN[A-Z ]* PRIVATE KEY-----.*?-----END[A-Z ]* PRIVATE KEY-----"
+# rex = re.compile(rex_b, flags=re.MULTILINE | re.DOTALL)
+
+
+def no_filter(inkey):
+    return inkey
+
+
+kfilters = [no_filter]
+
+
+def findkeys(data):
+    pkeys = rex.findall(data.decode())
+    ckeys = []
+    for pkey in pkeys:
+        for kfilter in kfilters:
+            try:
+                bkey = kfilter(pkey).encode()
+                ckey = serialization.load_pem_private_key(bkey, password=None)
+            except ValueError:
+                continue
+            ckeys.append(ckey)
+            break
+
+    akeys = []
+    for ckey in ckeys:
+        try:
+            xkey = ckey.private_bytes(
+                encoding=serialization.Encoding.PEM,
+                format=serialization.PrivateFormat.TraditionalOpenSSL,
+                encryption_algorithm=serialization.NoEncryption(),
+            )
+        except ValueError:
+            xkey = ckey.private_bytes(
+                encoding=serialization.Encoding.PEM,
+                format=serialization.PrivateFormat.PKCS8,
+                encryption_algorithm=serialization.NoEncryption(),
+            )
+        akeys.append(xkey)
+    return akeys
+
+
+if __name__ == "__main__":
+
+    ap = argparse.ArgumentParser()
+    ap.add_argument("dir")
+    ap.add_argument("outdir")
+    args = ap.parse_args()
+
+    for root, _, files in os.walk(args.dir):
+        for fn in files:
+            with open(root + fn, "rb") as f:
+                content = f.read()
+            keys = findkeys(content)
+            for k in keys:
+                ofn = fn
+                if ofn.endswith(".key"):
+                    ofn = ofn[0:-4]
+                if os.path.exists(f"{args.outdir}/{ofn}.key"):
+                    c = 0
+                    while True:
+                        if not os.path.exists(f"{args.outdir}/{ofn}.{c}.key"):
+                            ofn = f"{ofn}.{c}"
+                            break
+                        c += 1
+                ofn += ".key"
+                with open(f"{args.outdir}/{ofn}", "w") as f:
+                    f.write(k.decode())
