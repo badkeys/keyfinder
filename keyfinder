@@ -3,9 +3,9 @@
 import argparse
 import os
 import re
-import urllib.request
-import urllib.parse
 import sys
+import urllib.parse
+import urllib.request
 
 from cryptography.hazmat.primitives import serialization
 
@@ -84,8 +84,8 @@ if __name__ == "__main__":
                 writekey(k, host, args.outdir)
         sys.exit(0)
 
-    for dir in args.input:
-        for root, _, files in os.walk(dir):
+    for path in args.input:
+        for root, _, files in os.walk(path):
             for fn in files:
                 with open(root + fn, "rb") as f:
                     content = f.read()
