@@ -3,6 +3,9 @@
 import argparse
 import os
 import re
+import urllib.request
+import urllib.parse
+import sys
 
 from cryptography.hazmat.primitives import serialization
 
@@ -55,7 +58,7 @@ def writekey(key, fn, path):
         c = 0
         while True:
             if not os.path.exists(f"{path}/{fn}.{c}.key"):
-                fn = f"{ofn}.{c}"
+                fn = f"{fn}.{c}"
                 break
             c += 1
     fn += ".key"
@@ -66,17 +69,29 @@ def writekey(key, fn, path):
 if __name__ == "__main__":
 
     ap = argparse.ArgumentParser()
-    ap.add_argument("dir")
-    ap.add_argument("outdir")
+    ap.add_argument("input", nargs="+")
+    ap.add_argument("-o", "--outdir")
+    ap.add_argument("-u", "--url", action="store_true", help="URL instead of dir")
     args = ap.parse_args()
 
-    for root, _, files in os.walk(args.dir):
-        for fn in files:
-            with open(root + fn, "rb") as f:
-                content = f.read()
+    if args.url:
+        for url in args.input:
+            host = urllib.parse.urlparse(url).netloc
+            with urllib.request.urlopen(url) as u:
+                content = u.read()
             keys = findkeys(content)
             for k in keys:
-                ofn = fn
-                if ofn.endswith(".key"):
-                    ofn = ofn[0:-4]
-                writekey(k, ofn, args.outdir)
+                writekey(k, host, args.outdir)
+        sys.exit(0)
+
+    for dir in args.input:
+        for root, _, files in os.walk(dir):
+            for fn in files:
+                with open(root + fn, "rb") as f:
+                    content = f.read()
+                keys = findkeys(content)
+                for k in keys:
+                    ofn = fn
+                    if ofn.endswith(".key"):
+                        ofn = ofn[0:-4]
+                    writekey(k, ofn, args.outdir)
