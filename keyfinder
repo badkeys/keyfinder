@@ -46,8 +46,21 @@ def findkeys(data):
                 format=serialization.PrivateFormat.PKCS8,
                 encryption_algorithm=serialization.NoEncryption(),
             )
-        akeys.append(xkey)
+        akeys.append(xkey.decode())
     return akeys
+
+
+def writekey(key, fn, path):
+    if os.path.exists(f"{path}/{fn}.key"):
+        c = 0
+        while True:
+            if not os.path.exists(f"{path}/{fn}.{c}.key"):
+                fn = f"{ofn}.{c}"
+                break
+            c += 1
+    fn += ".key"
+    with open(f"{path}/{fn}", "w") as f:
+        f.write(key)
 
 
 if __name__ == "__main__":
@@ -66,13 +79,4 @@ if __name__ == "__main__":
                 ofn = fn
                 if ofn.endswith(".key"):
                     ofn = ofn[0:-4]
-                if os.path.exists(f"{args.outdir}/{ofn}.key"):
-                    c = 0
-                    while True:
-                        if not os.path.exists(f"{args.outdir}/{ofn}.{c}.key"):
-                            ofn = f"{ofn}.{c}"
-                            break
-                        c += 1
-                ofn += ".key"
-                with open(f"{args.outdir}/{ofn}", "w") as f:
-                    f.write(k.decode())
+                writekey(k, ofn, args.outdir)
