@@ -18,6 +18,7 @@ rex = re.compile(rex_t, flags=re.MULTILINE | re.DOTALL)
 # rex = re.compile(rex_b, flags=re.MULTILINE | re.DOTALL)
 
 dups = set()
+pdups = set()
 
 
 def filter_none(inkey):
@@ -29,26 +30,52 @@ def filter_unesc(inkey):
     return inkey.encode().decode("unicode_escape")
 
 
+def filter_unesc_multi(inkey):
+    old = ""
+    unesc = inkey
+    while "\\" in unesc and unesc != old:
+        old = unesc
+        unesc = unesc.encode().decode("unicode_escape")
+    return unesc
+
+
 def filter_html(inkey):
     html = bs4.BeautifulSoup(inkey, "lxml")
     return html.get_text()
 
 
-kfilters = [filter_none, filter_unesc, filter_html]
+kfilters = [filter_none, filter_unesc, filter_unesc_multi, filter_html]
 
 
 def findkeys(data):
     pkeys = rex.findall(data.decode(errors="ignore"))
     ckeys = []
     for pkey in pkeys:
+        ckey = None
         for kfilter in kfilters:
             try:
                 bkey = kfilter(pkey).encode()
                 ckey = serialization.load_pem_private_key(bkey, password=None)
-            except ValueError:
+            # ValueError: various key parsing issues
+            # TypeError: missing password
+            except (ValueError, TypeError):
                 continue
             ckeys.append(ckey)
             break
+        if not ckey:
+            if args.parseerr:
+                phash = hashlib.sha256(pkey.encode()).hexdigest()
+                if phash not in pdups:
+                    pdups.add(phash)
+                    fn = f"{args.parseerr}/{phash}"
+                    with open(fn, "w") as f:
+                        f.write(pkey)
+                    if args.verbose:
+                        print(f"Wrote unparsable candidate to {fn}")
+                elif args.verbose:
+                    print("Found unparsable candidate (duplicate)")
+            elif args.verbose:
+                print("Found unparsable candidate")
 
     akeys = []
     for ckey in ckeys:
@@ -97,6 +124,7 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("input", nargs="+")
     ap.add_argument("-o", "--outdir", required=True)
+    ap.add_argument("-p", "--parseerr", help="Output dir for unparsable candidates")
     ap.add_argument("-u", "--url", action="store_true", help="URL instead of dir")
     ap.add_argument("-v", "--verbose", action="store_true")
     args = ap.parse_args()
