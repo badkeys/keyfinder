@@ -15,11 +15,16 @@ rex = re.compile(rex_t, flags=re.MULTILINE | re.DOTALL)
 # rex = re.compile(rex_b, flags=re.MULTILINE | re.DOTALL)
 
 
-def no_filter(inkey):
+def filter_none(inkey):
     return inkey
 
 
-kfilters = [no_filter]
+# un-escape escaped chars like \n
+def filter_unesc(inkey):
+    return inkey.encode().decode("unicode_escape")
+
+
+kfilters = [filter_none, filter_unesc]
 
 
 def findkeys(data):
