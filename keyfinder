@@ -5,8 +5,8 @@ import os
 import re
 import sys
 import urllib.parse
-import urllib.request
 
+import requests
 from cryptography.hazmat.primitives import serialization
 
 rex_t = r"-----BEGIN[A-Z ]* PRIVATE KEY-----.*?-----END[A-Z ]* PRIVATE KEY-----"
@@ -77,9 +77,8 @@ if __name__ == "__main__":
     if args.url:
         for url in args.input:
             host = urllib.parse.urlparse(url).netloc
-            with urllib.request.urlopen(url) as u:
-                content = u.read()
-            keys = findkeys(content)
+            r = requests.get(url)
+            keys = findkeys(r.content)
             for k in keys:
                 writekey(k, host, args.outdir)
         sys.exit(0)
