@@ -81,7 +81,7 @@ def writekey(key, fn, path):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("input", nargs="+")
-    ap.add_argument("-o", "--outdir")
+    ap.add_argument("-o", "--outdir", required=True)
     ap.add_argument("-u", "--url", action="store_true", help="URL instead of dir")
     args = ap.parse_args()
 
