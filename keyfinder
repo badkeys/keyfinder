@@ -23,7 +23,7 @@ kfilters = [no_filter]
 
 
 def findkeys(data):
-    pkeys = rex.findall(data.decode())
+    pkeys = rex.findall(data.decode(errors="ignore"))
     ckeys = []
     for pkey in pkeys:
         for kfilter in kfilters:
