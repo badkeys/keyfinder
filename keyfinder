@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import argparse
+import hashlib
 import os
 import re
 import sys
@@ -15,6 +16,8 @@ rex_t = r"-----BEGIN[A-Z ]* PRIVATE KEY-----.*?-----END[A-Z ]* PRIVATE KEY-----"
 rex = re.compile(rex_t, flags=re.MULTILINE | re.DOTALL)
 # rex_b = b"-----BEGIN[A-Z ]* PRIVATE KEY-----.*?-----END[A-Z ]* PRIVATE KEY-----"
 # rex = re.compile(rex_b, flags=re.MULTILINE | re.DOTALL)
+
+dups = set()
 
 
 def filter_none(inkey):
@@ -49,6 +52,18 @@ def findkeys(data):
 
     akeys = []
     for ckey in ckeys:
+        spki = ckey.public_key().public_bytes(
+            encoding=serialization.Encoding.DER,
+            format=serialization.PublicFormat.SubjectPublicKeyInfo,
+        )
+        spkisha256 = hashlib.sha256(spki).hexdigest()
+        if spkisha256 in dups:
+            if args.verbose:
+                print(f"Duplicate {spkisha256}")
+            continue
+        dups.add(spkisha256)
+        if args.verbose:
+            print(f"Found key {spkisha256}")
         try:
             xkey = ckey.private_bytes(
                 encoding=serialization.Encoding.PEM,
@@ -83,6 +98,7 @@ if __name__ == "__main__":
     ap.add_argument("input", nargs="+")
     ap.add_argument("-o", "--outdir", required=True)
     ap.add_argument("-u", "--url", action="store_true", help="URL instead of dir")
+    ap.add_argument("-v", "--verbose", action="store_true")
     args = ap.parse_args()
 
     # Prevents BeautifulSoup warnings, e.g., when content only
