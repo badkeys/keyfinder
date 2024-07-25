@@ -5,7 +5,9 @@ import os
 import re
 import sys
 import urllib.parse
+import warnings
 
+import bs4
 import requests
 from cryptography.hazmat.primitives import serialization
 
@@ -24,7 +26,12 @@ def filter_unesc(inkey):
     return inkey.encode().decode("unicode_escape")
 
 
-kfilters = [filter_none, filter_unesc]
+def filter_html(inkey):
+    html = bs4.BeautifulSoup(inkey, "lxml")
+    return html.get_text()
+
+
+kfilters = [filter_none, filter_unesc, filter_html]
 
 
 def findkeys(data):
@@ -72,12 +79,15 @@ def writekey(key, fn, path):
 
 
 if __name__ == "__main__":
-
     ap = argparse.ArgumentParser()
     ap.add_argument("input", nargs="+")
     ap.add_argument("-o", "--outdir")
     ap.add_argument("-u", "--url", action="store_true", help="URL instead of dir")
     args = ap.parse_args()
+
+    # Prevents BeautifulSoup warnings, e.g., when content only
+    # contains a single URL or a filename.
+    warnings.filterwarnings("ignore", category=bs4.MarkupResemblesLocatorWarning)
 
     if args.url:
         for url in args.input:
