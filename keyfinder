@@ -11,6 +11,7 @@ import warnings
 
 import bs4
 import requests
+import urllib3
 from cryptography.hazmat.primitives import serialization
 
 rex_t = r"-----BEGIN[A-Z ]* PRIVATE KEY-----.*?-----END[A-Z ]* PRIVATE KEY-----"
@@ -154,13 +155,15 @@ if __name__ == "__main__":
     # Prevents BeautifulSoup warnings, e.g., when content only
     # contains a single URL or a filename.
     warnings.filterwarnings("ignore", category=bs4.MarkupResemblesLocatorWarning)
+    # Disable TLS certificate verification warning.
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
     if args.url:
         for url in args.input:
             host = urllib.parse.urlparse(url).netloc
             today = datetime.datetime.now(tz=datetime.timezone.utc).date().isoformat()
             meta = f"url: {url}\ndate: {today}\n\n"
-            r = requests.get(url, timeout=60)
+            r = requests.get(url, timeout=60, verify=False)
             keys = findkeys(r.content)
             for k in keys:
                 writekey(meta + k, host, args.outdir)
