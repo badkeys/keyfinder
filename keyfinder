@@ -45,7 +45,28 @@ def filter_html(inkey):
     return html.get_text()
 
 
-kfilters = [filter_none, filter_unesc, filter_unesc_multi, filter_html]
+# Filter characters that should not appear in a PEM structure
+# and spaces at beginning and end of lines.
+# (Could make sense to always apply this after other filters...?)
+def filter_nopem(inkey):
+    key = re.sub(r"[^0-9A-Za-z \n=+/-]", "", inkey)
+    key = re.sub(r"^ *", "", key, flags=re.MULTILINE)
+    return re.sub(r" *$", "", key, flags=re.MULTILINE)
+
+
+def filter_unesc_nopem(inkey):
+    key = filter_unesc_multi(inkey)
+    return filter_nopem(key)
+
+
+kfilters = [
+    filter_none,
+    filter_unesc,
+    filter_unesc_multi,
+    filter_html,
+    filter_nopem,
+    filter_unesc_nopem,
+]
 
 
 def findkeys(data):
