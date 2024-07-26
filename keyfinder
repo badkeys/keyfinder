@@ -148,7 +148,7 @@ if __name__ == "__main__":
     for path in args.input:
         for root, _, files in os.walk(path):
             for fn in files:
-                with open(root + fn, "rb") as f:
+                with open(f"{root}/{fn}", "rb") as f:
                     content = f.read()
                 keys = findkeys(content)
                 for k in keys:
