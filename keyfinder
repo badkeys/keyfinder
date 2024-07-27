@@ -52,7 +52,10 @@ def filter_html(inkey):
 def filter_nopem(inkey):
     key = re.sub(r"[^0-9A-Za-z \n=+/-]", "", inkey)
     key = re.sub(r"^ *", "", key, flags=re.MULTILINE)
-    return re.sub(r" *$", "", key, flags=re.MULTILINE)
+    key = re.sub(r" *$", "", key, flags=re.MULTILINE)
+    key = re.sub(r"KEY-----([^\n])", r"KEY-----\n\1", key)
+    key = re.sub(r"([^\n])-----END", r"\1\n-----END", key)
+    return re.sub(r"\n+", r"\n", key, flags=re.MULTILINE)
 
 
 def filter_unesc_nopem(inkey):
@@ -76,8 +79,8 @@ def findkeys(data):
     for pkey in pkeys:
         ckey = None
         for kfilter in kfilters:
+            bkey = kfilter(pkey).encode()
             try:
-                bkey = kfilter(pkey).encode()
                 ckey = serialization.load_pem_private_key(bkey, password=None)
             # ValueError: various key parsing issues
             # TypeError: missing password
