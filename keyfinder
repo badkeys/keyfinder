@@ -166,7 +166,11 @@ if __name__ == "__main__":
             host = urllib.parse.urlparse(url).netloc
             today = datetime.datetime.now(tz=datetime.timezone.utc).date().isoformat()
             meta = f"url: {url}\ndate: {today}\n\n"
-            r = requests.get(url, timeout=60, verify=False)
+            try:
+                r = requests.get(url, timeout=60, verify=False)
+            except requests.exceptions.ConnectionError:
+                print(f"Connection error with {url}")
+                continue
             keys = findkeys(r.content)
             for k in keys:
                 writekey(meta + k, host, args.outdir)
