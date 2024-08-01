@@ -163,7 +163,7 @@ def writekey(key, fn, path):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("input", nargs="+")
-    ap.add_argument("-o", "--outdir", required=True)
+    ap.add_argument("-o", "--outdir")
     ap.add_argument("-p", "--parseerr", help="Output dir for unparsable candidates")
     ap.add_argument("-u", "--url", action="store_true", help="URL instead of dir")
     ap.add_argument("--nobadkeys", action="store_true", help="Don't check with badkeys")
@@ -172,6 +172,9 @@ if __name__ == "__main__":
 
     if args.nobadkeys:
         usebk = False
+
+    if not args.outdir:
+        print("WARNING: No outdir given, will not write keys")
 
     # Prevents BeautifulSoup warnings, e.g., when content only
     # contains a single URL or a filename.
@@ -195,6 +198,8 @@ if __name__ == "__main__":
         sys.exit(0)
 
     for path in args.input:
+        if not os.path.isdir(path):
+            sys.exit(f"ERROR: Dir {path} does not exist")
         for root, _, files in os.walk(path):
             for fn in files:
                 with open(f"{root}/{fn}", "rb") as f:
