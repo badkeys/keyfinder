@@ -14,6 +14,13 @@ import requests
 import urllib3
 from cryptography.hazmat.primitives import serialization
 
+usebk = True
+try:
+    import badkeys
+except ImportError:
+    print("WARNING: Could not load badkeys, not checking for known keys")
+    usebk = False
+
 rex_t = r"-----BEGIN[A-Z ]* PRIVATE KEY-----.*?-----END[A-Z ]* PRIVATE KEY-----"
 rex = re.compile(rex_t, flags=re.MULTILINE | re.DOTALL)
 # rex_b = b"-----BEGIN[A-Z ]* PRIVATE KEY-----.*?-----END[A-Z ]* PRIVATE KEY-----"
@@ -118,8 +125,6 @@ def findkeys(data):
                 print(f"Duplicate {spkisha256}")
             continue
         dups.add(spkisha256)
-        if args.verbose:
-            print(f"Found key {spkisha256}")
         try:
             xkey = ckey.private_bytes(
                 encoding=serialization.Encoding.PEM,
@@ -132,7 +137,13 @@ def findkeys(data):
                 format=serialization.PrivateFormat.PKCS8,
                 encryption_algorithm=serialization.NoEncryption(),
             )
-        akeys.append(xkey.decode())
+        xkey = xkey.decode()
+        if usebk and badkeys.checkprivkey(xkey):
+            print(f"badkeys detection, skipping {spkisha256}")
+            continue
+        if args.verbose:
+            print(f"Found key {spkisha256}")
+        akeys.append(xkey)
     return akeys
 
 
@@ -155,8 +166,12 @@ if __name__ == "__main__":
     ap.add_argument("-o", "--outdir", required=True)
     ap.add_argument("-p", "--parseerr", help="Output dir for unparsable candidates")
     ap.add_argument("-u", "--url", action="store_true", help="URL instead of dir")
+    ap.add_argument("--nobadkeys", action="store_true", help="Don't check with badkeys")
     ap.add_argument("-v", "--verbose", action="store_true")
     args = ap.parse_args()
+
+    if args.nobadkeys:
+        usebk = False
 
     # Prevents BeautifulSoup warnings, e.g., when content only
     # contains a single URL or a filename.
