@@ -193,6 +193,8 @@ if __name__ == "__main__":
                 print(f"Connection error with {url}")
                 continue
             keys = findkeys(r.content)
+            if not args.outdir:
+                continue
             for k in keys:
                 writekey(meta + k, host, args.outdir)
         sys.exit(0)
@@ -205,6 +207,8 @@ if __name__ == "__main__":
                 with open(f"{root}/{fn}", "rb") as f:
                     content = f.read()
                 keys = findkeys(content)
+                if not args.outdir:
+                    continue
                 for k in keys:
                     ofn = fn
                     if ofn.endswith(".key"):
