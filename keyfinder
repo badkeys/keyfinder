@@ -138,7 +138,7 @@ def findkeys(data):
                 encryption_algorithm=serialization.NoEncryption(),
             )
         xkey = xkey.decode()
-        if usebk and badkeys.checkprivkey(xkey):
+        if usebk and badkeys.checkprivkey(xkey)["results"] != {}:
             print(f"badkeys detection, skipping {spkisha256}")
             continue
         if args.verbose:
