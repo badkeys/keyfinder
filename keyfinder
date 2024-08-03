@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import argparse
+import binascii
 import datetime
 import hashlib
 import os
@@ -84,6 +85,13 @@ def findkeys(data):
     pkeys = rex.findall(data.decode(errors="ignore"))
     ckeys = []
     for pkey in pkeys:
+
+        phash = hashlib.sha256(pkey.encode()).digest()
+        if phash in pdups:
+            print("Duplicate candidate " + binascii.hexlify(phash).decode()[0:16])
+            continue
+        pdups.add(phash)
+
         ckey = None
         for kfilter in kfilters:
             bkey = kfilter(pkey).encode()
@@ -100,18 +108,13 @@ def findkeys(data):
             break
         if not ckey:
             if args.parseerr:
-                phash = hashlib.sha256(pkey.encode()).hexdigest()
-                if phash not in pdups:
-                    pdups.add(phash)
-                    fn = f"{args.parseerr}/{phash}"
-                    with open(fn, "w") as f:
-                        f.write(pkey)
-                    if args.verbose:
-                        print(f"Wrote unparsable candidate to {fn}")
-                elif args.verbose:
-                    print("Found unparsable candidate (duplicate)")
+                fn = f"{args.parseerr}/{binascii.hexlify(phash).decode()}"
+                with open(fn, "w") as f:
+                    f.write(pkey)
+                if args.verbose:
+                    print(f"Wrote unparsable candidate {fn}")
             elif args.verbose:
-                print("Found unparsable candidate")
+                print("Unparsable candidate" + binascii.hexlify(phash).decode()[0:16])
 
     akeys = []
     for ckey in ckeys:
