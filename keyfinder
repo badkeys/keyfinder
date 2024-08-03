@@ -184,6 +184,8 @@ if __name__ == "__main__":
 
     if args.url:
         for url in args.input:
+            if args.verbose:
+                print(f"Checking {url}")
             host = urllib.parse.urlparse(url).netloc
             today = datetime.datetime.now(tz=datetime.timezone.utc).date().isoformat()
             meta = f"url: {url}\ndate: {today}\n\n"
