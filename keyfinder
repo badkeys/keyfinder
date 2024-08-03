@@ -170,6 +170,7 @@ if __name__ == "__main__":
     ap.add_argument("-p", "--parseerr", help="Output dir for unparsable candidates")
     ap.add_argument("-u", "--url", action="store_true", help="URL instead of dir")
     ap.add_argument("--nobadkeys", action="store_true", help="Don't check with badkeys")
+    ap.add_argument("-D", "--dupfile", help="Store duplicate information")
     ap.add_argument("-v", "--verbose", action="store_true")
     args = ap.parse_args()
 
@@ -184,6 +185,17 @@ if __name__ == "__main__":
     warnings.filterwarnings("ignore", category=bs4.MarkupResemblesLocatorWarning)
     # Disable TLS certificate verification warning.
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+    if args.dupfile and os.path.exists(args.dupfile):
+        with open(args.dupfile, "rb") as f:
+            pswitch = False
+            while d := f.read(32):
+                if d == b"\x00" * 32:
+                    pswitch = True
+                elif not pswitch:
+                    dups.add(d)
+                else:
+                    pdups.add(d)
 
     if args.url:
         for url in args.input:
@@ -222,3 +234,11 @@ if __name__ == "__main__":
                     if ofn.endswith(".key"):
                         ofn = ofn[0:-4]
                     writekey(k, ofn, args.outdir)
+
+    if args.dupfile:
+        with open(args.dupfile, "wb") as f:
+            for khash in sorted(dups):
+                f.write(khash)
+            f.write(b"\x00" * 32)
+            for phash in sorted(pdups):
+                f.write(phash)
