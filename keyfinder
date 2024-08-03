@@ -206,8 +206,11 @@ if __name__ == "__main__":
             sys.exit(f"ERROR: Dir {path} does not exist")
         for root, _, files in os.walk(path):
             for fn in files:
-                with open(f"{root}/{fn}", "rb") as f:
-                    content = f.read()
+                try:
+                    with open(f"{root}/{fn}", "rb") as f:
+                        content = f.read()
+                except FileNotFoundError:  # likely broken symlink
+                    continue
                 keys = findkeys(content)
                 if not args.outdir:
                     continue
