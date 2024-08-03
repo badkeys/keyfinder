@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import argparse
+import base64
 import binascii
 import datetime
 import hashlib
@@ -116,7 +117,7 @@ def findkeys(data):
             elif args.verbose:
                 print("Unparsable candidate " + binascii.hexlify(phash).decode()[0:16])
 
-    akeys = []
+    akeys = {}
     for ckey in ckeys:
         spki = ckey.public_key().public_bytes(
             encoding=serialization.Encoding.DER,
@@ -146,20 +147,17 @@ def findkeys(data):
             continue
         if args.verbose:
             print("Found key " + binascii.hexlify(spkisha256).decode()[0:16])
-        akeys.append(xkey)
+        akeys[spkisha256] = xkey
     return akeys
 
 
-def writekey(key, fn, path):
-    if os.path.exists(f"{path}/{fn}.key"):
-        c = 0
-        while True:
-            if not os.path.exists(f"{path}/{fn}.{c}.key"):
-                fn = f"{fn}.{c}"
-                break
-            c += 1
-    fn += ".key"
-    with open(f"{path}/{fn}", "w") as f:
+def writekey(key, fn, path, spki):
+    suffix = base64.urlsafe_b64encode(spki).decode()[0:3]
+    fp = f"{path}/{fn}.{suffix}.key"
+    if os.path.exists(fp):
+        emsg = f"file {fp} already exists"
+        raise OSError(emsg)
+    with open(fp, "w") as f:
         f.write(key)
 
 
@@ -212,8 +210,8 @@ if __name__ == "__main__":
             keys = findkeys(r.content)
             if not args.outdir:
                 continue
-            for k in keys:
-                writekey(meta + k, host, args.outdir)
+            for spki, k in keys.items():
+                writekey(meta + k, host, args.outdir, spki)
         sys.exit(0)
 
     for path in args.input:
@@ -229,11 +227,11 @@ if __name__ == "__main__":
                 keys = findkeys(content)
                 if not args.outdir:
                     continue
-                for k in keys:
+                for spki, k in keys.items():
                     ofn = fn
                     if ofn.endswith(".key"):
                         ofn = ofn[0:-4]
-                    writekey(k, ofn, args.outdir)
+                    writekey(k, ofn, args.outdir, spki)
 
     if args.dupfile:
         with open(args.dupfile, "wb") as f:
