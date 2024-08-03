@@ -114,7 +114,7 @@ def findkeys(data):
                 if args.verbose:
                     print(f"Wrote unparsable candidate {fn}")
             elif args.verbose:
-                print("Unparsable candidate" + binascii.hexlify(phash).decode()[0:16])
+                print("Unparsable candidate " + binascii.hexlify(phash).decode()[0:16])
 
     akeys = []
     for ckey in ckeys:
