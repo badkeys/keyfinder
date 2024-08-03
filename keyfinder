@@ -122,10 +122,10 @@ def findkeys(data):
             encoding=serialization.Encoding.DER,
             format=serialization.PublicFormat.SubjectPublicKeyInfo,
         )
-        spkisha256 = hashlib.sha256(spki).hexdigest()
+        spkisha256 = hashlib.sha256(spki).digest()
         if spkisha256 in dups:
             if args.verbose:
-                print(f"Duplicate {spkisha256}")
+                print("Duplicate " + binascii.hexlify(spkisha256).decode()[0:16])
             continue
         dups.add(spkisha256)
         try:
@@ -145,7 +145,7 @@ def findkeys(data):
             print(f"badkeys detection, skipping {spkisha256}")
             continue
         if args.verbose:
-            print(f"Found key {spkisha256}")
+            print("Found key " + binascii.hexlify(spkisha256).decode()[0:16])
         akeys.append(xkey)
     return akeys
 
