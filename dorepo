@@ -1,0 +1,22 @@
+#!/bin/bash
+# quick and dirty, together with ggpy, should be replaced
+# by pure python variant soon
+
+# FIXME does not work if .git is given in path
+reponame=$(echo $1 | sed -e 's:.*/::g')
+repopath=$(echo $1 | sed -e 's:.*//::g')
+
+mkdir tmp
+pushd tmp
+GIT_TERMINAL_PROMPT=0 git clone $1
+
+pushd $reponame
+tdir=$(../../ggpy)
+popd
+popd
+
+odir=out/$repopath
+mkdir -p $odir
+keyfinder -v -o $odir $tdir -D dups -p p/
+
+rm -r $tdir
