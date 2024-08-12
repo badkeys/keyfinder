@@ -44,9 +44,12 @@ def filter_unesc(inkey):
 def filter_unesc_multi(inkey):
     old = ""
     unesc = inkey
-    while "\\" in unesc and unesc != old:
+    # can sometimes run forever, limit rounds
+    c = 0
+    while "\\" in unesc and unesc != old and c <= 10:
         old = unesc
         unesc = unesc.encode().decode("unicode_escape")
+        c += 1
     return unesc
 
 
