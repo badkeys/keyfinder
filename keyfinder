@@ -222,6 +222,8 @@ if __name__ == "__main__":
             sys.exit(f"ERROR: Dir {path} does not exist")
         for root, _, files in os.walk(path):
             for fn in files:
+                if not os.path.isfile(f"{root}/{fn}"):
+                    continue
                 try:
                     with open(f"{root}/{fn}", "rb") as f:
                         content = f.read()
