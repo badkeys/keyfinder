@@ -14,6 +14,7 @@ import warnings
 import bs4
 import requests
 import urllib3
+from cryptography.exceptions import UnsupportedAlgorithm
 from cryptography.hazmat.primitives import serialization
 
 usebk = True
@@ -106,7 +107,8 @@ def findkeys(data):
                     ckey = serialization.load_pem_private_key(bkey, password=None)
             # ValueError: various key parsing issues
             # TypeError: missing password
-            except (ValueError, TypeError):
+            # UnsupportedAlgorithm: unusual curves etc. (e.g. secp224k1)
+            except (ValueError, TypeError, UnsupportedAlgorithm):
                 continue
             ckeys.append(ckey)
             break
@@ -119,6 +121,16 @@ def findkeys(data):
                     print(f"Wrote unparsable candidate {fn}")
             elif args.verbose:
                 print("Unparsable candidate " + binascii.hexlify(phash).decode()[0:16])
+
+    # check for binary keys
+    # TODO: find keys at arbitrary point in files
+    if data[0:2] == b"\x30\x82":
+        # looks like PKCS #1 or PKCS #8
+        try:
+            dkey = serialization.load_der_private_key(data, password=None)
+            ckeys.append(dkey)
+        except (ValueError, TypeError, UnsupportedAlgorithm):
+            pass
 
     akeys = {}
     for ckey in ckeys:
