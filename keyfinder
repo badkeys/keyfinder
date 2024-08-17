@@ -86,7 +86,7 @@ kfilters = [
 ]
 
 
-def findkeys(data):
+def findkeys(data, perr=None):
     pkeys = rex.findall(data.decode(errors="ignore"))
     ckeys = []
     for pkey in pkeys:
@@ -113,8 +113,10 @@ def findkeys(data):
             ckeys.append(ckey)
             break
         if not ckey:
-            if args.parseerr:
-                fn = f"{args.parseerr}/{binascii.hexlify(phash).decode()}"
+            if perr:
+                if not os.path.isdir(perr):
+                    os.makedirs(perr)
+                fn = f"{perr}/{binascii.hexlify(phash).decode()}"
                 with open(fn, "w") as f:
                     f.write(pkey)
                 if args.verbose:
@@ -167,6 +169,8 @@ def findkeys(data):
 
 
 def writekey(key, fn, path, spki):
+    if not os.path.isdir(path):
+        os.makedirs(path)
     suffix = base64.urlsafe_b64encode(spki).decode()[0:3]
     fp = f"{path}/{fn}.{suffix}.key"
     if os.path.exists(fp):
@@ -222,7 +226,7 @@ if __name__ == "__main__":
             except requests.exceptions.ConnectionError:
                 print(f"Connection error with {url}")
                 continue
-            keys = findkeys(r.content)
+            keys = findkeys(r.content, perr=args.parseerr)
             if not args.outdir:
                 continue
             for spki, k in keys.items():
@@ -230,8 +234,6 @@ if __name__ == "__main__":
         sys.exit(0)
 
     for path in args.input:
-        if not os.path.isdir(path):
-            sys.exit(f"ERROR: Dir {path} does not exist")
         for root, _, files in os.walk(path):
             for fn in files:
                 if not os.path.isfile(f"{root}/{fn}"):
@@ -241,7 +243,7 @@ if __name__ == "__main__":
                         content = f.read()
                 except FileNotFoundError:  # likely broken symlink
                     continue
-                keys = findkeys(content)
+                keys = findkeys(content, perr=args.parseerr)
                 if not args.outdir:
                     continue
                 for spki, k in keys.items():
