@@ -39,7 +39,7 @@ def filter_none(inkey):
 
 # un-escape escaped chars like \n
 def filter_unesc(inkey):
-    return inkey.encode().decode("unicode_escape")
+    return inkey.encode().decode("unicode_escape", errors="ignore")
 
 
 def filter_unesc_multi(inkey):
@@ -49,7 +49,7 @@ def filter_unesc_multi(inkey):
     c = 0
     while "\\" in unesc and unesc != old and c <= 10:
         old = unesc
-        unesc = unesc.encode().decode("unicode_escape")
+        unesc = unesc.encode().decode("unicode_escape", errors="ignore")
         c += 1
     return unesc
 
