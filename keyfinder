@@ -92,8 +92,9 @@ def findkeys(data, perr=None):
     for pkey in pkeys:
 
         phash = hashlib.sha256(pkey.encode()).digest()
+        shortphash = binascii.hexlify(phash).decode()[0:16]
         if phash in pdups:
-            print("Duplicate candidate " + binascii.hexlify(phash).decode()[0:16])
+            print(f"Duplicate candidate {shortphash}")
             continue
         pdups.add(phash)
 
@@ -125,7 +126,7 @@ def findkeys(data, perr=None):
                 if args.verbose:
                     print(f"Wrote unparsable candidate {fn}")
             elif args.verbose:
-                print("Unparsable candidate " + binascii.hexlify(phash).decode()[0:16])
+                print(f"Unparsable candidate {shortphash}")
 
     # check for binary keys
     # TODO: find keys at arbitrary point in files
@@ -144,9 +145,10 @@ def findkeys(data, perr=None):
             format=serialization.PublicFormat.SubjectPublicKeyInfo,
         )
         spkisha256 = hashlib.sha256(spki).digest()
+        shorthash = binascii.hexlify(spkisha256).decode()[0:16]
         if spkisha256 in dups:
             if args.verbose:
-                print("Duplicate " + binascii.hexlify(spkisha256).decode()[0:16])
+                print(f"Duplicate {shorthash}")
             continue
         dups.add(spkisha256)
         try:
@@ -163,10 +165,10 @@ def findkeys(data, perr=None):
             )
         xkey = xkey.decode()
         if usebk and badkeys.checkprivkey(xkey)["results"] != {}:
-            print(f"badkeys detection, skipping {spkisha256}")
+            print(f"badkeys detection, skipping {shorthash}")
             continue
         if args.verbose:
-            print("Found key " + binascii.hexlify(spkisha256).decode()[0:16])
+            print("Found key {shorthash}")
         akeys[spkisha256] = xkey
     return akeys
 
