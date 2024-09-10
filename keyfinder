@@ -168,7 +168,7 @@ def findkeys(data, perr=None):
             print(f"badkeys detection, skipping {shorthash}")
             continue
         if args.verbose:
-            print("Found key {shorthash}")
+            print(f"Found key {shorthash}")
         akeys[spkisha256] = xkey
     return akeys
 
