@@ -239,6 +239,8 @@ if __name__ == "__main__":
         sys.exit(0)
 
     for path in args.input:
+        if not os.path.isdir(path):
+            sys.exit(f"ERROR: {path} is not a directory")
         for root, _, files in os.walk(path):
             for fn in files:
                 if not os.path.isfile(f"{root}/{fn}"):
