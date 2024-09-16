@@ -233,28 +233,28 @@ if __name__ == "__main__":
                 continue
             for spki, k in keys.items():
                 writekey(meta + k, host, args.outdir, spki)
-        sys.exit(0)
 
-    for path in args.input:
-        if not os.path.isdir(path):
-            sys.exit(f"ERROR: {path} is not a directory")
-        for root, _, files in os.walk(path):
-            for fn in files:
-                if not os.path.isfile(f"{root}/{fn}"):
-                    continue
-                try:
-                    with open(f"{root}/{fn}", "rb") as f:
-                        content = f.read()
-                except FileNotFoundError:  # likely broken symlink
-                    continue
-                keys = findkeys(content, perr=args.parseerr)
-                if not args.outdir:
-                    continue
-                for spki, k in keys.items():
-                    ofn = fn
-                    if ofn.endswith(".key"):
-                        ofn = ofn[0:-4]
-                    writekey(k, ofn, args.outdir, spki)
+    else:
+        for path in args.input:
+            if not os.path.isdir(path):
+                sys.exit(f"ERROR: {path} is not a directory")
+            for root, _, files in os.walk(path):
+                for fn in files:
+                    if not os.path.isfile(f"{root}/{fn}"):
+                        continue
+                    try:
+                        with open(f"{root}/{fn}", "rb") as f:
+                            content = f.read()
+                    except FileNotFoundError:  # likely broken symlink
+                        continue
+                    keys = findkeys(content, perr=args.parseerr)
+                    if not args.outdir:
+                        continue
+                    for spki, k in keys.items():
+                        ofn = fn
+                        if ofn.endswith(".key"):
+                            ofn = ofn[0:-4]
+                        writekey(k, ofn, args.outdir, spki)
 
     if args.dupfile:
         with open(args.dupfile, "wb") as f:
