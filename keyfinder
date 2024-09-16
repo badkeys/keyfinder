@@ -109,10 +109,7 @@ def findkeys(data, perr=None):
             # ValueError: various key parsing issues
             # TypeError: missing password
             # UnsupportedAlgorithm: unusual curves etc. (e.g. secp224k1)
-            # FIXME possibly remove AttributeError after next python cryptography
-            # release (>43.0.0), see https://github.com/pyca/cryptography/pull/10608
-            # AttributeError: appears with openssh ecdsa-sk
-            except (ValueError, TypeError, UnsupportedAlgorithm, AttributeError):
+            except (ValueError, TypeError, UnsupportedAlgorithm):
                 continue
             ckeys.append(ckey)
             break
