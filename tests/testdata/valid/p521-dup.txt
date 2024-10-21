@@ -1,4 +1,5 @@
-P521 example from RFC 9500:
+P521 example from RFC 9500
+spkisha256:acb1b8327fef995e2458fdf5e3c33b2dc0749feabd6a894cb9bda9d70ac06c24
 
 -----BEGIN EC PRIVATE KEY-----
 MIHcAgEBBEIB2STcygqIf42Zdno32HTmN6Esy0d9bghmU1ZpTWi3ZV5QaWOP3ntF
@@ -8,7 +9,7 @@ FzagYoy7swMItuYY2wD2KtIExkYDWbyBiriWG/Dw/A7FquikKBc85W8A3psVfB5c
 gsZPVi/K3vxKTCj200LPPvYW/ILTO3KFySHyvzb92A==
 -----END EC PRIVATE KEY-----
 
-The same P521 example from RFC 9500:
+The same P521 example from RFC 9500
 
 -----BEGIN EC PRIVATE KEY-----
 MIHcAgEBBEIB2STcygqIf42Zdno32HTmN6Esy0d9bghmU1ZpTWi3ZV5QaWOP3ntF
