@@ -86,7 +86,7 @@ kfilters = [
 ]
 
 
-def findkeys(data, perr=None):
+def findkeys(data, perr=None, usebk=False, verbose=False):
     pkeys = rex.findall(data.decode(errors="ignore"))
     ckeys = []
     for pkey in pkeys:
@@ -94,7 +94,8 @@ def findkeys(data, perr=None):
         phash = hashlib.sha256(pkey.encode()).digest()
         shortphash = binascii.hexlify(phash).decode()[0:16]
         if phash in pdups:
-            print(f"Duplicate candidate {shortphash}")
+            if verbose:
+                print(f"Duplicate candidate {shortphash}")
             continue
         pdups.add(phash)
 
@@ -120,9 +121,9 @@ def findkeys(data, perr=None):
                 fn = f"{perr}/{binascii.hexlify(phash).decode()}"
                 with open(fn, "w") as f:
                     f.write(pkey)
-                if args.verbose:
+                if verbose:
                     print(f"Wrote unparsable candidate {fn}")
-            elif args.verbose:
+            elif verbose:
                 print(f"Unparsable candidate {shortphash}")
 
     # check for binary keys
@@ -144,7 +145,7 @@ def findkeys(data, perr=None):
         spkisha256 = hashlib.sha256(spki).digest()
         shorthash = binascii.hexlify(spkisha256).decode()[0:16]
         if spkisha256 in dups:
-            if args.verbose:
+            if verbose:
                 print(f"Duplicate {shorthash}")
             continue
         dups.add(spkisha256)
@@ -162,9 +163,10 @@ def findkeys(data, perr=None):
             )
         xkey = xkey.decode()
         if usebk and badkeys.checkprivkey(xkey)["results"] != {}:
-            print(f"badkeys detection, skipping {shorthash}")
+            if verbose:
+                print(f"badkeys detection, skipping {shorthash}")
             continue
-        if args.verbose:
+        if verbose:
             print(f"Found key {shorthash}")
         akeys[spkisha256] = xkey
     return akeys
@@ -190,11 +192,12 @@ if __name__ == "__main__":
     ap.add_argument("-u", "--url", action="store_true", help="URL instead of dir")
     ap.add_argument("--nobadkeys", action="store_true", help="Don't check with badkeys")
     ap.add_argument("-D", "--dupfile", help="Store duplicate information")
-    ap.add_argument("-v", "--verbose", action="store_true")
+    ap.add_argument("-q", "--quiet", action="store_true")
     args = ap.parse_args()
 
     if args.nobadkeys:
         usebk = False
+    verbose = not args.quiet
 
     if not args.outdir:
         print("WARNING: No outdir given, will not write keys")
@@ -218,7 +221,7 @@ if __name__ == "__main__":
 
     if args.url:
         for url in args.input:
-            if args.verbose:
+            if verbose:
                 print(f"Checking {url}")
             host = urllib.parse.urlparse(url).netloc
             today = datetime.datetime.now(tz=datetime.timezone.utc).date().isoformat()
@@ -228,7 +231,7 @@ if __name__ == "__main__":
             except requests.exceptions.ConnectionError:
                 print(f"Connection error with {url}")
                 continue
-            keys = findkeys(r.content, perr=args.parseerr)
+            keys = findkeys(r.content, perr=args.parseerr, usebk=usebk, verbose=verbose)
             if not args.outdir:
                 continue
             for spki, k in keys.items():
@@ -247,7 +250,8 @@ if __name__ == "__main__":
                             content = f.read()
                     except FileNotFoundError:  # likely broken symlink
                         continue
-                    keys = findkeys(content, perr=args.parseerr)
+                    keys = findkeys(content, perr=args.parseerr, usebk=usebk,
+                                    verbose=verbose)
                     if not args.outdir:
                         continue
                     for spki, k in keys.items():
