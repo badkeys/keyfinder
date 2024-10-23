@@ -107,7 +107,7 @@ def getdnsseckey(kstr):
             kdata[ikey] += kline.strip()
 
     # if it has a "Modulus", it is an RSA key
-    if "Modulus" in kdata:
+    if {"Modulus", "PublicExponent", "PrivateExponent"} <= kdata.keys():
         n = int.from_bytes(base64.b64decode(kdata["Modulus"]), byteorder="big")
         e = int.from_bytes(base64.b64decode(kdata["PublicExponent"]), byteorder="big")
         d = int.from_bytes(base64.b64decode(kdata["PrivateExponent"]), byteorder="big")
