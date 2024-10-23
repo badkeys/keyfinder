@@ -1,0 +1,40 @@
+RFC 5702 DNSSEC example RSA keys
+spkisha256:abb7947300f7c0025cf29b02d49a0baea816c9d8a8576be8310e3203a58a6235
+
+Private-key-format: v1.2
+Algorithm:       8 (RSASHA256)
+Modulus:         wVwaxrHF2CK64aYKRUibLiH30KpPuPBjel7E8ZydQW1HYWHfoGm
+                 idzC2RnhwCC293hCzw+TFR2nqn8OVSY5t2Q==
+PublicExponent:  AQAB
+PrivateExponent: UR44xX6zB3eaeyvTRzmskHADrPCmPWnr8dxsNwiDGHzrMKLN+i/
+                 HAam+97HxIKVWNDH2ba9Mf1SA8xu9dcHZAQ==
+Prime1:          4c8IvFu1AVXGWeFLLFh5vs7fbdzdC6U82fduE6KkSWk=
+Prime2:          2zZpBE8ZXVnL74QjG4zINlDfH+EOEtjJJ3RtaYDugvE=
+Exponent1:       G2xAPFfK0KGxGANDVNxd1K1c9wOmmJ51mGbzKFFNMFk=
+Exponent2:       GYxP1Pa7CAwtHm8SAGX594qZVofOMhgd6YFCNyeVpKE=
+Coefficient:     icQdNRjlZGPmuJm2TIadubcO8X7V4y07aVhX464tx8Q=
+
+
+spkisha256:fc7a18b9b2da8cc07e70b381cba0db690690b84910d6f1f9e091ad206f2a55aa
+
+Private-key-format: v1.2
+Algorithm:       10 (RSASHA512)
+Modulus:         0eg1M5b563zoq4k5ZEOnWmd2/BvpjzedJVdfIsDcMuuhE5SQ3pf
+                 Q7qmdaeMlC6Nf8DKGoUPGPXe06cP27/WRODtxXquSUytkO0kJDk
+                 8KX8PtA0+yBWwy7UnZDyCkynO00Uuk8HPVtZeMO1pHtlAGVnc8V
+                 jXZlNKdyit99waaE4s=
+PublicExponent:  AQAB
+PrivateExponent: rFS1IPbJllFFgFc33B5DDlC1egO8e81P4fFadODbp56V7sphKa6
+                 AZQCx8NYAew6VXFFPAKTw41QdHnK5kIYOwxvfFDjDcUGza88qbj
+                 yrDPSJenkeZbISMUSSqy7AMFzEolkk6WSn6k3thUVRgSlqDoOV3
+                 SEIAsrB043XzGrKIVE=
+Prime1:          8mbtsu9Tl9v7tKSHdCIeprLIQXQLzxlSZun5T1n/OjvXSUtvD7x
+                 nZJ+LHqaBj1dIgMbCq2U8O04QVcK3TS9GiQ==
+Prime2:          3a6gkfs74d0Jb7yL4j4adAif4fcp7ZrGt7G5NRVDDY/Mv4TERAK
+                 Ma0TKN3okKE0A7X+Rv2K84mhT4QLDlllEcw==
+Exponent1:       v3D5A9uuCn5rgVR7wgV8ba0/KSpsdSiLgsoA42GxiB1gvvs7gJM
+                 MmVTDu/ZG1p1ZnpLbhh/S/Qd/MSwyNlxC+Q==
+Exponent2:       m+ezf9dsDvYQK+gzjOLWYeKq5xWYBEYFGa3BLocMiF4oxkzOZ3J
+                 PZSWU/h1Fjp5RV7aPP0Vmx+hNjYMPIQ8Y5w==
+Coefficient:     Je5YhYpUron/WdOXjxNAxDubAp3i5X7UOUfhJcyIggqwY86IE0Q
+                 /Bk0Dw4SC9zxnsimmdBXW2Izd8Lwuk8FQcQ==
