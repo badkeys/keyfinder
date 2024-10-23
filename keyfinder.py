@@ -16,6 +16,7 @@ import requests
 import urllib3
 from cryptography.exceptions import UnsupportedAlgorithm
 from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import rsa
 
 usebk = True
 try:
@@ -26,6 +27,11 @@ except ImportError:
 
 rex_t = r"-----BEGIN[A-Z ]* PRIVATE KEY-----.*?-----END[A-Z ]* PRIVATE KEY-----"
 rex = re.compile(rex_t, flags=re.MULTILINE | re.DOTALL)
+
+# No easy way to detect end of a DNSSEC key, therefore consume
+# enough (5000) bytes to get the full key
+redns_t = r"Private-key-format: v.{1,5000}"
+redns = re.compile(redns_t, flags=re.MULTILINE | re.DOTALL)
 # rex_b = b"-----BEGIN[A-Z ]* PRIVATE KEY-----.*?-----END[A-Z ]* PRIVATE KEY-----"
 # rex = re.compile(rex_b, flags=re.MULTILINE | re.DOTALL)
 
@@ -86,6 +92,36 @@ kfilters = [
 ]
 
 
+def getdnsseckey(kstr):
+    kdata = {}
+    # Skip first line ("Private-key-format:"), stop if seen again
+    for kline in kstr.split("\n")[1:]:
+        if kline.startswith(("Created", "Private-key-format:")):
+            break
+        if ":" in kline:
+            ikey = kline.split(":", 1)[0].strip()
+            if ikey in kdata:  # if we see same key multiple times, ignore it
+                ikey = "bogus"
+            kdata[ikey] = kline.split(":", 1)[1].strip()
+        else:
+            kdata[ikey] += kline.strip()
+
+    # if it has a "Modulus", it is an RSA key
+    if "Modulus" in kdata:
+        n = int.from_bytes(base64.b64decode(kdata["Modulus"]), byteorder="big")
+        e = int.from_bytes(base64.b64decode(kdata["PublicExponent"]), byteorder="big")
+        d = int.from_bytes(base64.b64decode(kdata["PrivateExponent"]), byteorder="big")
+        p, q = rsa.rsa_recover_prime_factors(n, e, d)
+        iqmp = rsa.rsa_crt_iqmp(p, q)
+        dmp1 = rsa.rsa_crt_dmp1(d, p)
+        dmq1 = rsa.rsa_crt_dmq1(d, q)
+        pubnum = rsa.RSAPublicNumbers(e, n)
+        privnum = rsa.RSAPrivateNumbers(p, q, d, dmp1, dmq1, iqmp, pubnum)
+        return privnum.private_key()
+
+    return False
+
+
 def findkeys(data, perr=None, usebk=False, verbose=False):
     pkeys = rex.findall(data.decode(errors="ignore"))
     ckeys = []
@@ -125,6 +161,13 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
                     print(f"Wrote unparsable candidate {fn}")
             elif verbose:
                 print(f"Unparsable candidate {shortphash}")
+
+    dkeys = redns.findall(data.decode(errors="ignore"))
+    for dkey in dkeys:
+        # TODO: use filters, make perr from above generic
+        ret = getdnsseckey(dkey)
+        if ret:
+            ckeys.append(ret)
 
     # check for binary keys
     # TODO: find keys at arbitrary point in files
