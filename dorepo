@@ -16,7 +16,6 @@ popd
 popd
 
 odir=out/$repopath
-mkdir -p $odir
 keyfinder -v -o $odir $tdir -D dups -p p/
 
 rm -r $tdir
