@@ -14,17 +14,15 @@ outdir = tempfile.mkdtemp(prefix="gitkeyfind")
 
 revs = subprocess.check_output(["git", "rev-list", "--all"])
 revs = revs.decode().splitlines()
-# print(revs)
 
 hashtofn = {}
 for rev in revs:
     r = subprocess.check_output(["git", "ls-tree", "-r", rev])
-    for l in r.decode().splitlines():
-        d = l.split(" ")[2].split("\t")
+    for line in r.decode().splitlines():
+        d = line.split(" ")[2].split("\t")
         fn = d[1].split("/")[-1]
         hashtofn[d[0]] = fn
 
-# print(hashtofn)
 
 objects = subprocess.check_output(
     ["git", "cat-file", "--batch-check", "--batch-all-objects", "--unordered"]

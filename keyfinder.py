@@ -28,7 +28,7 @@ except ImportError:
 rex_t = r"-----BEGIN[A-Z ]* PRIVATE KEY-----.*?-----END[A-Z ]* PRIVATE KEY-----"
 rex = re.compile(rex_t, flags=re.MULTILINE | re.DOTALL)
 
-DNSPRE="Private-key-format:"
+DNSPRE = "Private-key-format:"
 
 dups = set()
 pdups = set()
@@ -275,7 +275,7 @@ if __name__ == "__main__":
             if verbose:
                 print(f"Checking {url}")
             host = urllib.parse.urlparse(url).netloc
-            today = datetime.datetime.now(tz=datetime.timezone.utc).date().isoformat()
+            today = datetime.datetime.now(tz=datetime.UTC).date().isoformat()
             meta = f"url: {url}\ndate: {today}\n\n"
             try:
                 r = requests.get(url, timeout=60, verify=False)

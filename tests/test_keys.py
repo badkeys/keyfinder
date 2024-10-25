@@ -1,7 +1,7 @@
 import binascii
-import unittest
 import os
 import re
+import unittest
 
 import keyfinder
 
