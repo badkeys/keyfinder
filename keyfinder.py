@@ -115,7 +115,7 @@ def getdnsseckey(kstr):
             iqmp = rsa.rsa_crt_iqmp(p, q)
             dmp1 = rsa.rsa_crt_dmp1(d, p)
             dmq1 = rsa.rsa_crt_dmq1(d, q)
-        except (ValueError, binascii.Error) as e:
+        except (ValueError, binascii.Error):
             # ValueError caused by invalid RSA values
             # binascii.Error caused by invalid base64
             return False
