@@ -99,9 +99,8 @@ def getdnsseckey(kstr):
             if ikey in kdata:  # if we see same key multiple times, ignore it
                 ikey = None
             kdata[ikey] = kline.split(":", 1)[1].strip()
-        else:
-            if ikey:
-                kdata[ikey] += kline.strip()
+        elif ikey:
+            kdata[ikey] += kline.strip()
 
     # if it has a "Modulus", it is an RSA key
     if {"Modulus", "PublicExponent", "PrivateExponent"} <= kdata.keys():
@@ -161,7 +160,7 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
                 if not os.path.isdir(perr):
                     os.makedirs(perr)
                 fn = f"{perr}/{binascii.hexlify(phash).decode()}"
-                with open(fn, "w") as f:
+                with open(fn, "w", encoding="ascii") as f:
                     f.write(pkey)
                 if verbose:
                     print(f"Wrote unparsable candidate {fn}")
@@ -231,7 +230,7 @@ def writekey(key, fn, path, spki):
     if os.path.exists(fp):
         emsg = f"file {fp} already exists"
         raise OSError(emsg)
-    with open(fp, "w") as f:
+    with open(fp, "w", encoding="ascii") as f:
         f.write(key)
 
 
