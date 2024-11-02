@@ -16,7 +16,7 @@ import requests
 import urllib3
 from cryptography.exceptions import UnsupportedAlgorithm
 from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives.asymmetric import rsa
+from cryptography.hazmat.primitives.asymmetric import ec, ed448, ed25519, rsa
 
 usebk = True
 try:
@@ -122,6 +122,24 @@ def getdnsseckey(kstr):
         privnum = rsa.RSAPrivateNumbers(p, q, d, dmp1, dmq1, iqmp, pubnum)
         return privnum.private_key()
 
+    if {"Algorithm", "PrivateKey"} <= kdata.keys():
+
+        try:
+            algid = int(kdata["Algorithm"].split(" ")[0])
+            ecbin = base64.b64decode(kdata["PrivateKey"])
+        except ValueError:  # non-numeric Algorithm or bad base64
+            return False
+
+        if algid == 13:
+            ecval = int.from_bytes(ecbin, byteorder="big")
+            return ec.derive_private_key(ecval, ec.SECP256R1())
+        if algid == 14:
+            ecval = int.from_bytes(ecbin, byteorder="big")
+            return ec.derive_private_key(ecval, ec.SECP384R1())
+        if algid == 15:
+            return ed25519.Ed25519PrivateKey.from_private_bytes(ecbin)
+        if algid == 16:
+            return ed448.Ed448PrivateKey.from_private_bytes(ecbin)
     return False
 
 
