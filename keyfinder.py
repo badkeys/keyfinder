@@ -5,6 +5,7 @@ import base64
 import binascii
 import datetime
 import hashlib
+import json
 import os
 import re
 import sys
@@ -27,6 +28,10 @@ except ImportError:
 
 rex_t = r"-----BEGIN[A-Z ]* PRIVATE KEY-----.*?-----END[A-Z ]* PRIVATE KEY-----"
 rex = re.compile(rex_t, flags=re.MULTILINE | re.DOTALL)
+
+# regexp for JSON Web Keys (JWK)
+jrex_t = r'{[^{}]*"kty"[^}]*}'
+jrex = re.compile(jrex_t, flags=re.MULTILINE | re.DOTALL)
 
 DNSPRE = "Private-key-format:"
 
@@ -174,6 +179,57 @@ def writeperr(perr, fragment, phash, verbose=True):
         print(f"Unparsable candidate {short}")
 
 
+def makersa(n, e, d):
+    p, q = rsa.rsa_recover_prime_factors(n, e, d)
+    iqmp = rsa.rsa_crt_iqmp(p, q)
+    dmp1 = rsa.rsa_crt_dmp1(d, p)
+    dmq1 = rsa.rsa_crt_dmq1(d, q)
+    pubnum = rsa.RSAPublicNumbers(e, n)
+    privnum = rsa.RSAPrivateNumbers(p, q, d, dmp1, dmq1, iqmp, pubnum)
+    return privnum.private_key()
+
+def ub64toint(b64):
+    # convert urssafe base64 to int and fix padding first
+    fb64 = b64.replace(" ", "")
+    pad = "=" * ((- len(fb64)) % 4)
+    raw = base64.urlsafe_b64decode(fb64 + pad)
+    return int.from_bytes(raw, byteorder="big")
+
+def getjwk(kstr):
+    try:
+        # RFC 7517 uses multiline base64 for values, standard JSON
+        # cannot parse this, therefore, remove newlines
+        j = json.loads(kstr.replace("\n", ""))
+    except json.decoder.JSONDecodeError:
+        return False
+    if {"n", "e", "d"} <= j.keys():
+        try:
+            n = ub64toint(j["n"])
+            e = ub64toint(j["e"])
+            d = ub64toint(j["d"])
+        except ValueError:
+            return False
+        return makersa(n, e, d)
+    if {"x", "y", "d", "crv"} <= j.keys():
+        if j["crv"] == "P-256":
+            curve = ec.SECP256R1()
+        elif j["crv"] == "P-384":
+            curve = ec.SECP384R1()
+        elif j["crv"] == "P-521":
+            curve = ec.SECP521R1()
+        else:
+            return False
+        d = ub64toint(j["d"])
+        x = ub64toint(j["x"])
+        y = ub64toint(j["y"])
+        eckey = ec.derive_private_key(d, curve)
+        nums = eckey.public_key().public_numbers()
+        if nums.x != x or nums.y != y:
+            return False
+        return eckey
+    return False
+
+
 def findkeys(data, perr=None, usebk=False, verbose=False):
     datastr = data.decode(errors="replace", encoding="ascii")
 
@@ -201,6 +257,21 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
             break
         if not ckey:
             writeperr(perr, pkey, phash, verbose=verbose)
+
+    jkeys = jrex.findall(datastr)
+    for jkey in jkeys:
+        phash = checkphash(jkey, verbose=verbose)
+        if not phash:
+            continue
+
+        for kfilter in kfilters:
+            jfkey = kfilter(jkey)
+            ckey = getjwk(jfkey)
+            if ckey:
+                ckeys.append(ckey)
+                break
+        if not ckey:
+            writeperr(perr, jkey, phash, verbose=verbose)
 
     if DNSPRE in datastr:
         dkeys = datastr.split(DNSPRE)
