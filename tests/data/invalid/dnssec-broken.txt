@@ -35,3 +35,64 @@ Modulus:         wVwaxrHF2CK64aYKRUibLiH30KpPuPBjel7E8ZydQW1HYWHfoGm
 PublicExponent:  AQAB
 PrivateExponent: UR44xX6zB3eaeyvTRzmskHADrPCmPWnr8dxsNwiDGHzrMKLN+i/
                  HAam+97HxIKVWNDH2ba9Mf1SA8xußßßßßßß==
+
+
+
+Wrong curve (P384 value for P256 curve):
+
+Private-key-format: v1.2
+Algorithm: 13 (ECDSAP256SHA256)
+PrivateKey: WURgWHCcYIYUPWgeLmiPY2DJJk02vgrmTfitxgqcL4vw
+W7BOrbawVmVe0d9V94SR
+
+
+
+Too large value for P384 curve:
+
+Private-key-format: v1.2
+Algorithm: 14 (ECDSAP384SHA384)
+PrivateKey: 0eg1M5b563zoq4k5ZEOnWmd2/BvpjzedJVdfIsDcMuuhE5SQ3pf
+            Q7qmdaeMlC6Nf8DKGoUPGPXe06cP27/WRODtxXquSUytkO0kJDk
+            8KX8PtA0+yBWwy7UnZDyCkynO00Uuk8HPVtZeMO1pHtlAGVnc8V
+            jXZlNKdyit99waaE4s=
+
+
+
+Key too large (Curve448 vs. Curve25519):
+
+Private-key-format: v1.2
+Algorithm: 15 (ED25519)
+PrivateKey: xZ+5Cgm463xugtkY5B0Jx6erFTXp13rYegst0qRtNsOYnaVpMx0Z/c5EiA9x
+            8wWbDDct/U3FhYWA
+
+
+
+Key too small (Curve448 vs. Curve25519):
+
+Private-key-format: v1.2
+Algorithm: 16 (ED448)
+PrivateKey: ODIyNjAzODQ2MjgwODAxMjI2NDUxOTAyMDQxNDIyNjI=
+
+
+
+Key too small (Curve448 vs. Curve25519):
+
+Private-key-format: v1.2
+Algorithm: 16 (ED448)
+PrivateKey: ODIyNjAzODQ2MjgwODAxMjI2NDUxOTAyMDQxNDIyNjI=
+
+
+
+Non-numeric algorithm ID:
+
+Private-key-format: v1.2
+Algorithm: (ECDSAP256SHA256)
+PrivateKey: GU6SnQ/Ou+xC5RumuIUIuJZteXT2z0O/ok1s38Et6mQ=
+
+
+
+ECDSA with invalid base64 padding:
+
+Private-key-format: v1.2
+Algorithm: 13 (ECDSAP256SHA256)
+PrivateKey: GU6SnQ/Ou+xC5RumuIUIuJZteXT2z0O/ok1s38Et6mQ

@@ -131,14 +131,22 @@ def getdnsseckey(kstr):
             return False
 
         if algid == 13:
+            if len(ecbin) > 32:
+                return False
             ecval = int.from_bytes(ecbin, byteorder="big")
             return ec.derive_private_key(ecval, ec.SECP256R1())
         if algid == 14:
+            if len(ecbin) > 48:
+                return False
             ecval = int.from_bytes(ecbin, byteorder="big")
             return ec.derive_private_key(ecval, ec.SECP384R1())
         if algid == 15:
+            if len(ecbin) != 32:
+                return False
             return ed25519.Ed25519PrivateKey.from_private_bytes(ecbin)
         if algid == 16:
+            if len(ecbin) != 57:
+                return False
             return ed448.Ed448PrivateKey.from_private_bytes(ecbin)
     return False
 

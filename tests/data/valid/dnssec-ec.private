@@ -1,0 +1,31 @@
+Elliptic curve examples from RFC 6605 / RFC 8080
+
+
+spkisha256:4cebf02cf648a32441326ee9556100a8949cc9715c83c90a32da145d72157c42
+
+Private-key-format: v1.2
+Algorithm: 13 (ECDSAP256SHA256)
+PrivateKey: GU6SnQ/Ou+xC5RumuIUIuJZteXT2z0O/ok1s38Et6mQ=
+
+
+spkisha256:7b7dad101d0192ed185473150dfd5ea8bf251773a28f15d65b55823ff9e4673a
+
+Private-key-format: v1.2
+Algorithm: 14 (ECDSAP384SHA384)
+PrivateKey: WURgWHCcYIYUPWgeLmiPY2DJJk02vgrmTfitxgqcL4vw
+W7BOrbawVmVe0d9V94SR
+
+
+spkisha256:25862b96b39bea4b80097a44733b250391faf4a16f49cb81d41a982c8d283d24
+
+Private-key-format: v1.2
+Algorithm: 15 (ED25519)
+PrivateKey: ODIyNjAzODQ2MjgwODAxMjI2NDUxOTAyMDQxNDIyNjI=
+
+
+spkisha256:44e4354ec7b9ff26e3e824319af5b381baf2793db37c84d80e7083381626f7c7
+
+Private-key-format: v1.2
+Algorithm: 16 (ED448)
+PrivateKey: xZ+5Cgm463xugtkY5B0Jx6erFTXp13rYegst0qRtNsOYnaVpMx0Z/c5EiA9x
+            8wWbDDct/U3FhYWA
