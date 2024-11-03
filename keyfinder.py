@@ -167,7 +167,7 @@ def writeperr(perr, fragment, phash, verbose=True):
         if not os.path.isdir(perr):
             os.makedirs(perr)
         fn = f"{perr}/{binascii.hexlify(phash).decode()}"
-        with open(fn, "w", encoding="ascii") as f:
+        with open(fn, "w", encoding="ascii", errors="ignore") as f:
             f.write(fragment)
     if verbose:
         short = binascii.hexlify(phash).decode()[0:16]
@@ -175,7 +175,7 @@ def writeperr(perr, fragment, phash, verbose=True):
 
 
 def findkeys(data, perr=None, usebk=False, verbose=False):
-    datastr = data.decode(errors="ignore")
+    datastr = data.decode(errors="replace", encoding="ascii")
 
     pkeys = rex.findall(datastr)
     ckeys = []
@@ -203,13 +203,21 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
             writeperr(perr, pkey, phash, verbose=verbose)
 
     if DNSPRE in datastr:
-        dkeys = data.decode(errors="ignore").split(DNSPRE)
+        dkeys = datastr.split(DNSPRE)
         for keyfrag in dkeys[1:]:
             dkey = DNSPRE + keyfrag
-            # TODO: use filters, make perr from above generic
-            ret = getdnsseckey(dkey)
-            if ret:
-                ckeys.append(ret)
+            phash = checkphash(dkey, verbose=verbose)
+            if not phash:
+                continue
+
+            for kfilter in kfilters:
+                dfkey = kfilter(dkey)
+                ckey = getdnsseckey(dfkey)
+                if ckey:
+                    ckeys.append(ckey)
+                    break
+            if not ckey:
+                writeperr(perr, dkey, phash, verbose=verbose)
 
     # check for binary keys
     # TODO: find keys at arbitrary point in files

@@ -14,6 +14,10 @@ class TestKeys(unittest.TestCase):
         # For each key in testdata/valid, we expect a string
         # of the form spkisha256:[hash] in the same file.
         for fn in os.listdir(f"{TDPATH}/valid/"):
+            # we need to reset those for each testcase
+            keyfinder.dups = set()
+            keyfinder.pdups = set()
+
             with open(f"{TDPATH}/valid/{fn}", "rb") as f:
                 data = f.read()
             expect = set()
