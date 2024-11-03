@@ -151,20 +151,38 @@ def getdnsseckey(kstr):
     return False
 
 
+def checkphash(fragment, verbose=True):
+    phash = hashlib.sha256(fragment.encode()).digest()
+    if phash in pdups:
+        if verbose:
+            short = binascii.hexlify(phash).decode()[0:16]
+            print(f"Duplicate candidate {short}")
+        return False
+    pdups.add(phash)
+    return phash
+
+
+def writeperr(perr, fragment, phash, verbose=True):
+    if perr:
+        if not os.path.isdir(perr):
+            os.makedirs(perr)
+        fn = f"{perr}/{binascii.hexlify(phash).decode()}"
+        with open(fn, "w", encoding="ascii") as f:
+            f.write(fragment)
+    if verbose:
+        short = binascii.hexlify(phash).decode()[0:16]
+        print(f"Unparsable candidate {short}")
+
+
 def findkeys(data, perr=None, usebk=False, verbose=False):
     datastr = data.decode(errors="ignore")
 
     pkeys = rex.findall(datastr)
     ckeys = []
     for pkey in pkeys:
-
-        phash = hashlib.sha256(pkey.encode()).digest()
-        shortphash = binascii.hexlify(phash).decode()[0:16]
-        if phash in pdups:
-            if verbose:
-                print(f"Duplicate candidate {shortphash}")
+        phash = checkphash(pkey, verbose=verbose)
+        if not phash:
             continue
-        pdups.add(phash)
 
         ckey = None
         for kfilter in kfilters:
@@ -182,16 +200,7 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
             ckeys.append(ckey)
             break
         if not ckey:
-            if perr:
-                if not os.path.isdir(perr):
-                    os.makedirs(perr)
-                fn = f"{perr}/{binascii.hexlify(phash).decode()}"
-                with open(fn, "w", encoding="ascii") as f:
-                    f.write(pkey)
-                if verbose:
-                    print(f"Wrote unparsable candidate {fn}")
-            elif verbose:
-                print(f"Unparsable candidate {shortphash}")
+            writeperr(perr, pkey, phash, verbose=verbose)
 
     if DNSPRE in datastr:
         dkeys = data.decode(errors="ignore").split(DNSPRE)
