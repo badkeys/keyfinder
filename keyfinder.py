@@ -188,12 +188,14 @@ def makersa(n, e, d):
     privnum = rsa.RSAPrivateNumbers(p, q, d, dmp1, dmq1, iqmp, pubnum)
     return privnum.private_key()
 
+
 def ub64toint(b64):
     # convert urssafe base64 to int and fix padding first
     fb64 = b64.replace(" ", "")
-    pad = "=" * ((- len(fb64)) % 4)
+    pad = "=" * ((-len(fb64)) % 4)
     raw = base64.urlsafe_b64decode(fb64 + pad)
     return int.from_bytes(raw, byteorder="big")
+
 
 def getjwk(kstr):
     try:
