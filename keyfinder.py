@@ -197,6 +197,13 @@ def ub64toint(b64):
     return int.from_bytes(raw, byteorder="big")
 
 
+def ub64tobin(b64):
+    # convert urssafe base64 to int and fix padding first
+    fb64 = b64.replace(" ", "")
+    pad = "=" * ((-len(fb64)) % 4)
+    return base64.urlsafe_b64decode(fb64 + pad)
+
+
 def getjwk(kstr):
     try:
         # RFC 7517 uses multiline base64 for values, standard JSON
@@ -212,7 +219,22 @@ def getjwk(kstr):
         except ValueError:
             return False
         return makersa(n, e, d)
-    if {"x", "y", "d", "crv"} <= j.keys():
+    # y value does not exist for all curve types, and
+    # we do not need it, so ignore
+    if {"x", "d", "crv"} <= j.keys():
+        if j["crv"] == "Ed25519":
+            d = ub64tobin(j["d"])
+            x = ub64tobin(j["x"])
+            if len(d) != 32:
+                return False
+            edkey = ed25519.Ed25519PrivateKey.from_private_bytes(d)
+            xb = edkey.public_key().public_bytes(encoding=serialization.Encoding.Raw,
+                                                 format=serialization.PublicFormat.Raw)
+            if xb != x:
+                return False
+            return edkey
+        d = ub64toint(j["d"])
+        x = ub64toint(j["x"])
         if j["crv"] == "P-256":
             curve = ec.SECP256R1()
         elif j["crv"] == "P-384":
@@ -221,12 +243,9 @@ def getjwk(kstr):
             curve = ec.SECP521R1()
         else:
             return False
-        d = ub64toint(j["d"])
-        x = ub64toint(j["x"])
-        y = ub64toint(j["y"])
         eckey = ec.derive_private_key(d, curve)
         nums = eckey.public_key().public_numbers()
-        if nums.x != x or nums.y != y:
+        if nums.x != x:
             return False
         return eckey
     return False
