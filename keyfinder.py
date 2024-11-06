@@ -116,17 +116,12 @@ def getdnsseckey(kstr):
                                byteorder="big")
             d = int.from_bytes(base64.b64decode(kdata["PrivateExponent"]),
                                byteorder="big")
-            p, q = rsa.rsa_recover_prime_factors(n, e, d)
-            iqmp = rsa.rsa_crt_iqmp(p, q)
-            dmp1 = rsa.rsa_crt_dmp1(d, p)
-            dmq1 = rsa.rsa_crt_dmq1(d, q)
+            key = makersa(n, e, d)
         except (ValueError, binascii.Error):
             # ValueError caused by invalid RSA values
             # binascii.Error caused by invalid base64
             return False
-        pubnum = rsa.RSAPublicNumbers(e, n)
-        privnum = rsa.RSAPrivateNumbers(p, q, d, dmp1, dmq1, iqmp, pubnum)
-        return privnum.private_key()
+        return key
 
     if {"Algorithm", "PrivateKey"} <= kdata.keys():
 
