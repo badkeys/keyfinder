@@ -17,7 +17,8 @@ import requests
 import urllib3
 from cryptography.exceptions import UnsupportedAlgorithm
 from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives.asymmetric import ec, ed448, ed25519, rsa
+from cryptography.hazmat.primitives.asymmetric import ec, ed448, ed25519
+from cryptography.hazmat.primitives.asymmetric import rsa, x448, x25519
 
 usebk = True
 try:
@@ -189,19 +190,16 @@ def makersa(n, e, d):
     return privnum.private_key()
 
 
-def ub64toint(b64):
-    # convert urssafe base64 to int and fix padding first
-    fb64 = b64.replace(" ", "")
-    pad = "=" * ((-len(fb64)) % 4)
-    raw = base64.urlsafe_b64decode(fb64 + pad)
-    return int.from_bytes(raw, byteorder="big")
-
-
 def ub64tobin(b64):
     # convert urssafe base64 to int and fix padding first
     fb64 = b64.replace(" ", "")
     pad = "=" * ((-len(fb64)) % 4)
     return base64.urlsafe_b64decode(fb64 + pad)
+
+
+def ub64toint(b64):
+    raw = ub64tobin(b64)
+    return int.from_bytes(raw, byteorder="big")
 
 
 def getjwk(kstr):
@@ -222,17 +220,31 @@ def getjwk(kstr):
     # y value does not exist for all curve types, and
     # we do not need it, so ignore
     if {"x", "d", "crv"} <= j.keys():
-        if j["crv"] == "Ed25519":
+        if j["crv"] in ["Ed25519", "X25519", "Ed448", "X448"]:
             d = ub64tobin(j["d"])
             x = ub64tobin(j["x"])
-            if len(d) != 32:
-                return False
-            edkey = ed25519.Ed25519PrivateKey.from_private_bytes(d)
-            xb = edkey.public_key().public_bytes(encoding=serialization.Encoding.Raw,
-                                                 format=serialization.PublicFormat.Raw)
+            if j["crv"] == "Ed25519":
+                if len(d) != 32:
+                    return False
+                key = ed25519.Ed25519PrivateKey.from_private_bytes(d)
+            if j["crv"] == "X25519":
+                if len(d) != 32:
+                    return False
+                key = x25519.X25519PrivateKey.from_private_bytes(d)
+            if j["crv"] == "Ed448":
+                if len(d) != 57:
+                    return False
+                key = ed448.Ed448PrivateKey.from_private_bytes(d)
+            if j["crv"] == "X448":
+                if len(d) != 56:
+                    return False
+                key = x448.X448PrivateKey.from_private_bytes(d)
+            xb = key.public_key().public_bytes(encoding=serialization.Encoding.Raw,
+                                               format=serialization.PublicFormat.Raw)
             if xb != x:
                 return False
-            return edkey
+            return key
+
         d = ub64toint(j["d"])
         x = ub64toint(j["x"])
         if j["crv"] == "P-256":
