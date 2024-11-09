@@ -368,7 +368,9 @@ def writekey(key, fn, path, spki):
     if not os.path.isdir(path):
         os.makedirs(path)
     suffix = base64.urlsafe_b64encode(spki).decode()[0:3]
-    fp = f"{path}/{fn}.{suffix}.key"
+    # avoid problematic filenames
+    ffn = re.sub(r"(^[.-]|[^A-Za-z0-9._-])", "_", fn)
+    fp = f"{path}/{ffn}.{suffix}.key"
     if os.path.exists(fp):
         emsg = f"file {fp} already exists"
         raise OSError(emsg)
