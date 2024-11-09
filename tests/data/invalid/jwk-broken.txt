@@ -1,0 +1,47 @@
+ECDSA P-256 with d too large
+
+{"kty":"EC",
+"crv":"P-256",
+"x":"MKBCTNIcKUSDii11ySs3526iDZ8AiTo7Tu6KPAqv7D4",
+"y":"4Etl6SRW2YiLUrN5vfvVHuhp7x8PxltmWWlbbM4IFyM",
+"d":"870MB6gfuTJ4HtUnUvYMyJpr5eUZNP4Bk43bVdj3eAE870MB6gfuTJ4HtUnUvYMyJpr5eUZNP4Bk43bVdj3eAE"
+}
+
+
+Invalid curve name ("crv")
+
+{"kty":"EC",
+"crv":"invalid",
+"x":"MKBCTNIcKUSDii11ySs3526iDZ8AiTo7Tu6KPAqv7D4",
+"y":"4Etl6SRW2YiLUrN5vfvVHuhp7x8PxltmWWlbbM4IFyM",
+"d":"870MB6gfuTJ4HtUnUvYMyJpr5eUZNP4Bk43bVdj3eAE"
+}
+
+
+Invalid ECDSA P-256 (public/private key mismatch)
+
+{"kty":"EC",
+"crv":"P-256",
+"x":"qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqo",
+"y":"u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7s",
+"d":"zMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMw",
+"use":"enc",
+"kid":"1"}
+
+
+Invalid RSA values
+
+{"kty":"RSA",
+"n":"AYag",
+"e":"AQAB",
+"d":"AQky"
+}
+
+
+Invalid base64
+
+{"kty":"RSA",
+"n":"ÄäÖö",
+"e":"AQAB",
+"d":"AQky"
+}

@@ -209,9 +209,9 @@ def getjwk(kstr):
             n = ub64toint(j["n"])
             e = ub64toint(j["e"])
             d = ub64toint(j["d"])
-        except ValueError:
+            return makersa(n, e, d)
+        except ValueError as e:
             return False
-        return makersa(n, e, d)
     # y value does not exist for all curve types, and
     # we do not need it, so ignore
     if {"x", "d", "crv"} <= j.keys():
