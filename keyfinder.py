@@ -56,7 +56,8 @@ def filter_unesc_multi(inkey):
     c = 0
     while "\\" in unesc and unesc != old and c <= 10:
         old = unesc
-        unesc = unesc.encode().decode("unicode_escape", errors="ignore")
+        enctmp = unesc.encode(errors="replace")
+        unesc = enctmp.decode("unicode_escape", errors="replace")
         c += 1
     return unesc
 

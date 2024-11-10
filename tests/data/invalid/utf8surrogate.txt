@@ -1,0 +1,7 @@
+Contains an utf-8 surrogate character to make sure the
+unescaping code does not fail
+
+Private-key-format: v1.2
+\s
+\\n
+\ud800
