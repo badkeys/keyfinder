@@ -379,12 +379,28 @@ def writekey(key, fn, path, spki):
         f.write(key)
 
 
+def findinfile(fp, outdir, parseerr, usebk, verbose):
+    try:
+        with open(f"{fp}", "rb") as f:
+            content = f.read()
+    except FileNotFoundError:  # likely broken symlink
+        return
+    keys = findkeys(content, perr=parseerr, usebk=usebk, verbose=verbose)
+    if not outdir:
+        return
+    for spki, k in keys.items():
+        ofn = fp.split("/")[-1]
+        if ofn.endswith(".key"):
+            ofn = ofn[0:-4]
+        writekey(k, ofn, outdir, spki)
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("input", nargs="+")
     ap.add_argument("-o", "--outdir")
     ap.add_argument("-p", "--parseerr", help="Output dir for unparsable candidates")
-    ap.add_argument("-u", "--url", action="store_true", help="URL instead of dir")
+    ap.add_argument("-u", "--url", action="store_true", help="URL instead of dir/file")
     ap.add_argument("--nobadkeys", action="store_true", help="Don't check with badkeys")
     ap.add_argument("-D", "--dupfile", help="Store duplicate information")
     ap.add_argument("-q", "--quiet", action="store_true")
@@ -434,26 +450,16 @@ if __name__ == "__main__":
 
     else:
         for path in args.input:
+            if os.path.isfile(path):
+                findinfile(path, args.outdir, args.parseerr, usebk, verbose)
+                continue
             if not os.path.isdir(path):
-                sys.exit(f"ERROR: {path} is not a directory")
-            for root, _, files in os.walk(path):
+                sys.exit(f"ERROR: {path} is not a file or directory")
+            for p, _, files in os.walk(path):
                 for fn in files:
-                    if not os.path.isfile(f"{root}/{fn}"):
+                    if not os.path.isfile(f"{p}/{fn}"):
                         continue
-                    try:
-                        with open(f"{root}/{fn}", "rb") as f:
-                            content = f.read()
-                    except FileNotFoundError:  # likely broken symlink
-                        continue
-                    keys = findkeys(content, perr=args.parseerr, usebk=usebk,
-                                    verbose=verbose)
-                    if not args.outdir:
-                        continue
-                    for spki, k in keys.items():
-                        ofn = fn
-                        if ofn.endswith(".key"):
-                            ofn = ofn[0:-4]
-                        writekey(k, ofn, args.outdir, spki)
+                    findinfile(f"{p}/{fn}", args.outdir, args.parseerr, usebk, verbose)
 
     if args.dupfile:
         with open(args.dupfile, "wb") as f:
