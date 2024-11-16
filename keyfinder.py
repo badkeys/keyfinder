@@ -217,8 +217,11 @@ def getjwk(kstr):
     # we do not need it, so ignore
     if {"x", "d", "crv"} <= j.keys():
         if j["crv"] in ["Ed25519", "X25519", "Ed448", "X448"]:
-            d = ub64tobin(j["d"])
-            x = ub64tobin(j["x"])
+            try:
+                d = ub64tobin(j["d"])
+                x = ub64tobin(j["x"])
+            except binascii.Error:
+                return False
             if j["crv"] == "Ed25519":
                 if len(d) != 32:
                     return False
@@ -241,8 +244,11 @@ def getjwk(kstr):
                 return False
             return key
 
-        d = ub64toint(j["d"])
-        x = ub64toint(j["x"])
+        try:
+            d = ub64toint(j["d"])
+            x = ub64toint(j["x"])
+        except binascii.Error:
+            return False
         if j["crv"] == "P-256":
             curve = ec.SECP256R1()
         elif j["crv"] == "P-384":
