@@ -249,6 +249,8 @@ def getjwk(kstr):
             x = ub64toint(j["x"])
         except binascii.Error:
             return False
+        if d == 0:
+            return False
         if j["crv"] == "P-256":
             curve = ec.SECP256R1()
         elif j["crv"] == "P-384":
