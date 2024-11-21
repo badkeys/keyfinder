@@ -1,0 +1,63 @@
+#!/usr/bin/python3
+
+import argparse
+import shutil
+import tempfile
+
+import pygit2
+
+import keyfinder
+
+ap = argparse.ArgumentParser()
+ap.add_argument("repo", help="URL or local path of git repository")
+ap.add_argument("--keep", action="store_true", help="Don't delete tmpdir")
+args = ap.parse_args()
+
+tmpdir = tempfile.mkdtemp(prefix="gitkf")
+
+
+if "://" in args.repo:
+    rep = pygit2.clone_repository(args.repo, tmpdir)
+else:
+    rep = pygit2.Repository(args.repo)
+
+dd = rep.odb
+
+count = 0
+results = {}
+for oid in dd:
+    o = rep.get(oid)
+    if isinstance(o, pygit2.Blob):
+        keys = keyfinder.findkeys(o.read_raw(), usebk=True)
+        if keys:
+            results[str(oid)] = keys
+            count += 1
+            if count % 1000 == 0:
+                print(f"pass1: {count} objects...")
+            print(f"found key(s) in {oid}")
+
+fcount = 0
+fnames = {}
+for oid in dd:
+    o = rep.get(oid)
+    if isinstance(o, pygit2.Tree):
+        for x in o:
+            gid = str(x.id)
+            if gid in results and id not in fnames:
+                fnames[gid] = x.name
+                fcount += 1
+                if fcount >= count:
+                    break
+        else:
+            continue
+        break
+
+for k, v in results.items():
+    for spki, key in v.items():
+        fn = fnames.get(k, k)
+        keyfinder.writekey(key, fn, "out/", spki)
+
+if args.keep:
+    print(f"Git clone / tmpdir not removed: {tmpdir}")
+else:
+    shutil.rmtree(tmpdir)
