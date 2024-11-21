@@ -211,7 +211,7 @@ def getjwk(kstr):
             e = ub64toint(j["e"])
             d = ub64toint(j["d"])
             return makersa(n, e, d)
-        except ValueError as e:
+        except ValueError:
             return False
     # y value does not exist for all curve types, and
     # we do not need it, so ignore
