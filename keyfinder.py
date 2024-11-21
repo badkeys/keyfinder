@@ -7,6 +7,7 @@ import datetime
 import hashlib
 import json
 import os
+import pathlib
 import re
 import sys
 import urllib.parse
@@ -169,8 +170,7 @@ def writeperr(perr, fragment, phash, verbose=True):
         if not os.path.isdir(perr):
             os.makedirs(perr)
         fn = f"{perr}/{binascii.hexlify(phash).decode()}"
-        with open(fn, "w", encoding="ascii", errors="ignore") as f:
-            f.write(fragment)
+        pathlib.Path(fn).write_text(fragment, encoding="ascii")
     if verbose:
         short = binascii.hexlify(phash).decode()[0:16]
         print(f"Unparsable candidate {short}")
@@ -383,16 +383,11 @@ def writekey(key, fn, path, spki):
     if os.path.exists(fp):
         emsg = f"file {fp} already exists"
         raise OSError(emsg)
-    with open(fp, "w", encoding="ascii") as f:
-        f.write(key)
+    pathlib.Path(fp).write_text(key, encoding="ascii")
 
 
 def findinfile(fp, outdir, parseerr, usebk, verbose):
-    try:
-        with open(f"{fp}", "rb") as f:
-            content = f.read()
-    except FileNotFoundError:  # likely broken symlink
-        return
+    content = pathlib.Path(f"{fp}").read_bytes()
     keys = findkeys(content, perr=parseerr, usebk=usebk, verbose=verbose)
     if not outdir:
         return
