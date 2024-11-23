@@ -398,6 +398,27 @@ def findinfile(fp, outdir, parseerr, usebk, verbose):
         writekey(k, ofn, outdir, spki)
 
 
+def load_dupfile(dupfile):
+    with open(dupfile, "rb") as f:
+        pswitch = False
+        while d := f.read(32):
+            if d == b"\x00" * 32:
+                pswitch = True
+            elif not pswitch:
+                dups.add(d)
+            else:
+                pdups.add(d)
+
+
+def write_dupfile(dupfile):
+    with open(dupfile, "wb") as f:
+        for khash in sorted(dups):
+            f.write(khash)
+        f.write(b"\x00" * 32)
+        for phash in sorted(pdups):
+            f.write(phash)
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("input", nargs="+")
@@ -423,15 +444,7 @@ if __name__ == "__main__":
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
     if args.dupfile and os.path.exists(args.dupfile):
-        with open(args.dupfile, "rb") as f:
-            pswitch = False
-            while d := f.read(32):
-                if d == b"\x00" * 32:
-                    pswitch = True
-                elif not pswitch:
-                    dups.add(d)
-                else:
-                    pdups.add(d)
+        load_dupfile(args.dupfile)
 
     if args.url:
         for url in args.input:
@@ -465,9 +478,4 @@ if __name__ == "__main__":
                     findinfile(f"{p}/{fn}", args.outdir, args.parseerr, usebk, verbose)
 
     if args.dupfile:
-        with open(args.dupfile, "wb") as f:
-            for khash in sorted(dups):
-                f.write(khash)
-            f.write(b"\x00" * 32)
-            for phash in sorted(pdups):
-                f.write(phash)
+        write_dupfile(args.dupfile)
