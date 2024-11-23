@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import argparse
+import os
 import shutil
 import tempfile
 import urllib
@@ -13,9 +14,18 @@ ap = argparse.ArgumentParser()
 ap.add_argument("repo", help="URL or local path of git repository")
 ap.add_argument("--keep", action="store_true", help="Don't delete tmpdir")
 ap.add_argument("-o", "--outdir", default="out", help="Output dir")
+ap.add_argument("-D", "--dupfile", help="Store duplicate information")
+ap.add_argument("--nobadkeys", action="store_true", help="Don't check with badkeys")
 args = ap.parse_args()
 
 tmpdir = tempfile.mkdtemp(prefix="gitkf")
+
+if args.dupfile and os.path.exists(args.dupfile):
+    keyfinder.load_dupfile(args.dupfile)
+
+usebk = True
+if args.nobadkeys:
+    usebk = False
 
 shortd = {
     "github.com": "hub",
@@ -40,7 +50,7 @@ results = {}
 for oid in dd:
     o = rep.get(oid)
     if isinstance(o, pygit2.Blob):
-        keys = keyfinder.findkeys(o.read_raw(), usebk=True)
+        keys = keyfinder.findkeys(o.read_raw(), usebk=usebk)
         if keys:
             results[str(oid)] = keys
             count += 1
@@ -74,3 +84,6 @@ if args.keep:
     print(f"Git clone / tmpdir not removed: {tmpdir}")
 else:
     shutil.rmtree(tmpdir)
+
+    if args.dupfile:
+        keyfinder.write_dupfile(args.dupfile)
