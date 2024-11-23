@@ -52,10 +52,11 @@ for oid in dd:
             continue
         break
 
-for k, v in results.items():
+for gitid, v in results.items():
     for spki, key in v.items():
-        fn = fnames.get(k, k)
-        keyfinder.writekey(key, fn, "out/", spki)
+        fn = fnames.get(gitid, gitid)
+        prefix = f"id: {gitid}\n\n"
+        keyfinder.writekey(prefix + key, fn, "out/", spki)
 
 if args.keep:
     print(f"Git clone / tmpdir not removed: {tmpdir}")
