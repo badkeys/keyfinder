@@ -45,7 +45,6 @@ else:
 
 dd = rep.odb
 
-count = 0
 results = {}
 for oid in dd:
     o = rep.get(oid)
@@ -53,12 +52,8 @@ for oid in dd:
         keys = keyfinder.findkeys(o.read_raw(), usebk=usebk)
         if keys:
             results[str(oid)] = keys
-            count += 1
-            if count % 1000 == 0:
-                print(f"pass1: {count} objects...")
             print(f"found key(s) in {oid}")
 
-fcount = 0
 fnames = {}
 for oid in dd:
     o = rep.get(oid)
@@ -67,12 +62,6 @@ for oid in dd:
             gid = str(x.id)
             if gid in results and id not in fnames:
                 fnames[gid] = x.name
-                fcount += 1
-                if fcount >= count:
-                    break
-        else:
-            continue
-        break
 
 for gitid, v in results.items():
     for spki, key in v.items():
