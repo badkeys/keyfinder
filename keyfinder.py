@@ -259,7 +259,10 @@ def getjwk(kstr):
             curve = ec.SECP521R1()
         else:
             return False
-        eckey = ec.derive_private_key(d, curve)
+        try:
+            eckey = ec.derive_private_key(d, curve)
+        except ValueError:
+            return False
         nums = eckey.public_key().public_numbers()
         if nums.x != x:
             return False
