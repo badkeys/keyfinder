@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RSAKeyPair xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2002/03/xkms#">
+  <!--
+  Example key (Alice) from XKMS 2.0 specification
+  spkisha256:2b6b815de62d5dce220b256033e35d9580a81107dc044648ca1040b1b1098661
+  -->
+  <Modulus>
+    0nIsmR+aVW2egl5MIfOKy4HuMKkk9AZ/IQuDLVPlhzOfgngjVQCjr8uvmnqtNu8HBupui8LgG
+    thO6U9D0CNT5mbmhIAErRADUMIAFsi7LzBarUvNWTqYNEJmcHsAUZdrdcDrkNnG7SzbuJx+GD
+    NiHKVDQggPBLc1XagW20RMvok=
+  </Modulus>
+  <Exponent>AQAB</Exponent>
+  <P>
+    7p05u5P4BO+aXdyD/6n31a4Dk9kC4Tv5fMbE15/ioPii9JwPU2J29qhO1QEqvgNwxv67w4jrC
+    025Yz5LXgjziw==
+  </P>
+  <Q>
+    4ceKAtGgSJg8ddRxwz8OESXVOd1tlSHFu7Gqona3VxbrOONLZEbsnYA4dv4nI+pxl8PmUe5CP
+    gggGElx30OIuw==
+  </Q>
+  <DP>
+    ve9rEDQVfaBYCRTKAY2DGJT+hgZ881qxGjCCaXz8gdPIqts6m85KEcchkQ3vvvawI8aLIXdwW
+    TwSMLxac8y+Rw==
+  </DP>
+  <DQ>
+    jW/x3ggx76gmn+3hAl3a0xUvORukjTrl4snOyg2ylsUNv8prrTrc+WGcfbaDEHXKiTc4bnTiX
+    He8m1pPEnz9Bw==
+  </DQ>
+  <InverseQ>
+    yxCo+k0v8n80Qeo2QAGKiwltLF+1ObyZ1TQg4chISWdfLD+j1nIKIs1miELdszjO/szLWMx5k
+    A3kOLi6jXsByw==
+  </InverseQ>
+  <D>
+    aeLWu8jh75/zRGdL6T1QFatvfH5uwHXQW4EeZJ00/P0lghEOvgNPWPGkjpaxNtW39GvaaWoJN
+    pilw9CFL2HHIVn1OVZyw5BDbotQty3lm66KL7qtrjqlqyPu5ARglGqTZIaRyP8LW6NAbkyxLP
+    npADVfHJuEePmooCmHbTValP0=
+  </D>
+</RSAKeyPair>

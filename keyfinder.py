@@ -11,6 +11,7 @@ import pathlib
 import re
 import sys
 import urllib.parse
+import xml
 import warnings
 
 import bs4
@@ -34,6 +35,9 @@ rex = re.compile(rex_t, flags=re.MULTILINE | re.DOTALL)
 # regexp for JSON Web Keys (JWK)
 jrex_t = r'{[^{}]*"kty"[^}]*}'
 jrex = re.compile(jrex_t, flags=re.MULTILINE | re.DOTALL)
+
+xrex_t = r"(?=(<RSAKeyPair.*?</RSAKeyPair>))"
+xrex = re.compile(xrex_t, flags=re.MULTILINE | re.DOTALL)
 
 DNSPRE = "Private-key-format:"
 
@@ -170,7 +174,7 @@ def writeperr(perr, fragment, phash, verbose=True):
         if not os.path.isdir(perr):
             os.makedirs(perr)
         fn = f"{perr}/{binascii.hexlify(phash).decode()}"
-        pathlib.Path(fn).write_text(fragment, encoding="ascii")
+        pathlib.Path(fn).write_text(fragment, encoding="ascii", errors="replace")
     if verbose:
         short = binascii.hexlify(phash).decode()[0:16]
         print(f"Unparsable candidate {short}")
@@ -270,6 +274,25 @@ def getjwk(kstr):
     return False
 
 
+def getxkms(kstr):
+    try:
+        tree = xml.etree.ElementTree.fromstring(kstr)
+    except xml.etree.ElementTree.ParseError:
+        return None
+    n = tree.find("{*}Modulus")
+    e = tree.find("{*}Exponent")
+    d = tree.find("{*}D")
+    if n is not None and e is not None and d is not None:
+        n = n.text.replace(" ", "").replace("\n", "").replace("\r", "")
+        e = e.text.replace(" ", "").replace("\n", "").replace("\r", "")
+        d = d.text.replace(" ", "").replace("\n", "").replace("\r", "")
+        n = int.from_bytes(base64.b64decode(n), byteorder="big")
+        e = int.from_bytes(base64.b64decode(e), byteorder="big")
+        d = int.from_bytes(base64.b64decode(d), byteorder="big")
+        return makersa(n, e, d)
+    return None
+
+
 def findkeys(data, perr=None, usebk=False, verbose=False):
     datastr = data.decode(errors="replace", encoding="ascii")
 
@@ -312,6 +335,21 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
                 break
         if not ckey:
             writeperr(perr, jkey, phash, verbose=verbose)
+
+    xkeys = xrex.findall(datastr)
+    for xkey in xkeys:
+        phash = checkphash(xkey, verbose=verbose)
+        if not phash:
+            continue
+
+        for kfilter in kfilters:
+            xfkey = kfilter(xkey)
+            ckey = getxkms(xfkey)
+            if ckey:
+                ckeys.append(ckey)
+                break
+        if not ckey:
+            writeperr(perr, xkey, phash, verbose=verbose)
 
     if DNSPRE in datastr:
         dkeys = datastr.split(DNSPRE)
