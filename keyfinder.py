@@ -11,7 +11,7 @@ import pathlib
 import re
 import sys
 import urllib.parse
-import xml
+import xml.etree.ElementTree
 import warnings
 
 import bs4
