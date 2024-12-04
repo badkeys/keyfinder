@@ -286,9 +286,12 @@ def getxkms(kstr):
         n = n.text.replace(" ", "").replace("\n", "").replace("\r", "")
         e = e.text.replace(" ", "").replace("\n", "").replace("\r", "")
         d = d.text.replace(" ", "").replace("\n", "").replace("\r", "")
-        n = int.from_bytes(base64.b64decode(n), byteorder="big")
-        e = int.from_bytes(base64.b64decode(e), byteorder="big")
-        d = int.from_bytes(base64.b64decode(d), byteorder="big")
+        try:
+            n = int.from_bytes(base64.b64decode(n), byteorder="big")
+            e = int.from_bytes(base64.b64decode(e), byteorder="big")
+            d = int.from_bytes(base64.b64decode(d), byteorder="big")
+        except binascii.Error:
+            return None
         return makersa(n, e, d)
     return None
 
