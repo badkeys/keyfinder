@@ -421,7 +421,7 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
         if verbose:
             print(f"Found key {shorthash}")
         akeys[spkisha256] = xkey
-    if '<!DOCTYPE html' in datastr or '<html' in datastr or '<HTML' in datastr:
+    if "<!DOCTYPE html" in datastr or "<html" in datastr or "<HTML" in datastr:
         h2txt = bs4.BeautifulSoup(datastr, "lxml").get_text().encode()
         akeys |= findkeys(h2txt, perr=perr, usebk=usebk, verbose=verbose)
 
