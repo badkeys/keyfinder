@@ -29,7 +29,7 @@ if args.nobadkeys:
 
 shortd = {
     "github.com": "hub",
-    "gitlab.org": "lab",
+    "gitlab.com": "lab",
 }
 
 if "://" in args.repo:
