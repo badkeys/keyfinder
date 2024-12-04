@@ -1,0 +1,26 @@
+<RSAKeyPair>
+<!--
+     RSA key in old XKMS draft format
+     https://www.w3.org/TR/2002/WD-xkms2-20020318/
+     spkisha256:a050e9aa6eebe273cbf9e70d8797ce7e6920afe711e0f74b99dd1740107cee5c
+-->
+<ds:Modulus>
+    3FFtWUsvEajQt2SeSF+RvAxWdPPh5GSlQnp8SDvvqvCwE6PXcRWrIGmV7twNf2TUXCxYuztUU
+    ClMIy14B0Q+k1ej2nekmYL7+Ic3DDGVFVaYPoxaRY0Y2lV8tOreynWegpFbITXc8V6Y02QfR5
+    O7Pn1/10ElslaF/TF8MQGqYE8=
+</ds:Modulus>
+<PublicExponent>AQAB</PublicExponent>
+<PrivateExponent>
+    REUnMUhO6ZX6NxoCwkJ7El5wXAVGtlNJsnPqFygbeEjlBvD6TZx9TqnpP/8IX7WK6JUFWd9kn
+    QJvCWeJjhbjnImSS/3xc+v+m4glnnebZbaghvfunbI++fQaNAFRVT1hLvEGknqC/7zsrUM04o
+    gU7hP+XgdFTJ1QYGfGHl5c0IE=
+</PrivateExponent>
+<P>
+    8dnXAObQvcKL0Rr/A+5Ufp1yJgLpH+uohFcJV2kUDCzv5VWKcN+LTq2mciKlnFbAQXKa5dNPO
+    x4qi3An/4NSMQ==
+</P>
+<Q>
+    6TUX4d9+enb/aLHtck39x7cPQWlKkNFFJAqXaaRScDhjf4d8b009uW/pu3O2BdIJPY8M/QnUR
+    lqXGLqGGl26fw==
+</Q>
+</RSAKeyPair>

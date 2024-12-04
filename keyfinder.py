@@ -275,25 +275,32 @@ def getjwk(kstr):
 
 
 def getxkms(kstr):
+    # remove draft-style namespaces
+    xkstr = kstr.replace("ds:", "")
     try:
-        tree = xml.etree.ElementTree.fromstring(kstr)
+        tree = xml.etree.ElementTree.fromstring(xkstr)
     except xml.etree.ElementTree.ParseError:
         return None
     n = tree.find("{*}Modulus")
     e = tree.find("{*}Exponent")
     d = tree.find("{*}D")
-    if n is not None and e is not None and d is not None:
-        n = n.text.replace(" ", "").replace("\n", "").replace("\r", "")
-        e = e.text.replace(" ", "").replace("\n", "").replace("\r", "")
-        d = d.text.replace(" ", "").replace("\n", "").replace("\r", "")
-        try:
-            n = int.from_bytes(base64.b64decode(n), byteorder="big")
-            e = int.from_bytes(base64.b64decode(e), byteorder="big")
-            d = int.from_bytes(base64.b64decode(d), byteorder="big")
-        except binascii.Error:
-            return None
-        return makersa(n, e, d)
-    return None
+    # try draft-style names
+    if e is None:
+        e = tree.find("{*}PublicExponent")
+    if d is None:
+        d = tree.find("{*}PrivateExponent")
+    if None in [n, d, e]:
+        return None
+    n = n.text.replace(" ", "").replace("\n", "").replace("\r", "")
+    e = e.text.replace(" ", "").replace("\n", "").replace("\r", "")
+    d = d.text.replace(" ", "").replace("\n", "").replace("\r", "")
+    try:
+        n = int.from_bytes(base64.b64decode(n), byteorder="big")
+        e = int.from_bytes(base64.b64decode(e), byteorder="big")
+        d = int.from_bytes(base64.b64decode(d), byteorder="big")
+    except binascii.Error:
+        return None
+    return makersa(n, e, d)
 
 
 def findkeys(data, perr=None, usebk=False, verbose=False):
