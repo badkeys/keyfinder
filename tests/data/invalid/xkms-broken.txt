@@ -1,0 +1,24 @@
+XKMS with invalid/incomplete base64 values:
+
+<RSAKeyPair>
+<Modulus>$$0nIsm[...]</Modulus>
+<Exponent>AQAB=</Exponent>
+<P>7p05u5P4BO+aXdyD/6n31a4Dk9kC4Tv5fMbE15/ioPii9JwPU2J29qhO1QEqvgNwxv67w4jrC</P>
+<Q>4ceKAtGgSJg8ddRxwz8OESXVOd1tlSHFu7Gqona3VxbrOONLZEbsnYA4dv4nI+pxl8PmUe5CP</Q>
+<DP>ve9rEDQVfaBYCRTKAY2DGJT+hgZ881qxGjCCaXz8gdPIqts6m85KEcchkQ3vvvawI8aLIXdwW</DP>
+<DQ>jW/x3ggx76gmn+3hAl3a0xUvORukjTrl4snOyg2ylsUNv8prrTrc+WGcfbaDEHXKiTc4bnTi</DQ>
+<InverseQ>yxCo+k0v8n80Qeo2QAGKiwltLF+1ObyZ1TQg4chISWdfLD+</InverseQ>
+<D>aeLWu8jh75/zRGdL6T1QFatvfH5uwHXQW4EeZJ00/P0lghEOvgNPWPGkjpa[...]</D>
+</RSAKeyPair>
+
+
+XKMS without private values:
+
+<RSAKeyPair>
+<Modulus>
+0nIsmR+aVW2egl5MIfOKy4HuMKkk9AZ/IQuDLVPlhzOfgngjVQCjr8uvmnqtNu8HBupui8LgG
+thO6U9D0CNT5mbmhIAErRADUMIAFsi7LzBarUvNWTqYNEJmcHsAUZdrdcDrkNnG7SzbuJx+GD
+NiHKVDQggPBLc1XagW20RMvok=
+</Modulus>
+<Exponent>AQAB</Exponent>
+</RSAKeyPair>
