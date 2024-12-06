@@ -1,0 +1,6 @@
+beautifulsoup4
+cryptography
+lxml
+pygit2
+requests
+urllib3
