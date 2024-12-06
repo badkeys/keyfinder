@@ -10,7 +10,7 @@ jobs:
   build:
     strategy:
       matrix:
-        python-version: [3.9, 3.x, 3.14-dev]
+        python-version: [3.9, 3.x, 3.13]  # CUSTOM: not running on 3.14-dev
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,7 +20,6 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies and linters
         run: |
-          [ -e preinstci.sh ] && sudo ./preinstci.sh
           [ -e requirements.txt ] && pip install -r requirements.txt
           pip install pycodestyle pyupgrade pyflakes dlint pylint ruff
       - name: Run tests
