@@ -1,4 +1,4 @@
-# last update: 2024-12-03
+# last update: 2024-12-06
 # https://github.com/hannob/codingstyle
 ---
 name: runpyci
@@ -23,6 +23,5 @@ jobs:
           [ -e requirements.txt ] && pip install -r requirements.txt
           pip install pycodestyle pyupgrade pyflakes dlint pylint ruff
       - name: Run tests
-        shell: bash
         run: |
           ./runpyci.sh

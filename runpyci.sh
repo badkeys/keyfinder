@@ -1,5 +1,5 @@
 #!/bin/bash
-# last update: 2024-12-03
+# last update: 2024-12-06
 # https://github.com/hannob/codingstyle
 set -euo pipefail
 
@@ -15,6 +15,6 @@ pyupgrade --py313-plus $pyfiles
 pyflakes $pyfiles
 flake8 --select=DUO --ignore=DUO107,DUO123,DUO131 $pyfiles
 pylint --disable=$PYLINTIG $pyfiles
-ruff check --select=ALL --ignore=$RUFFIG $pyfiles
+ruff check --line-length=100 --select=ALL --ignore=$RUFFIG $pyfiles
 
 [ -d tests ] && python -m unittest -v
