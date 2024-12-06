@@ -390,6 +390,9 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
 
     akeys = {}
     for ckey in ckeys:
+        if isinstance(ckey, rsa.RSAPrivateKey) and ckey.key_size > 5000:
+            # skip very large RSA keys
+            continue
         spki = ckey.public_key().public_bytes(
             encoding=serialization.Encoding.DER,
             format=serialization.PublicFormat.SubjectPublicKeyInfo,
