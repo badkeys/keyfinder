@@ -307,59 +307,63 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
     datastr = data.decode(errors="replace", encoding="ascii")
 
     ckeys = []
-    pkeys = rex.findall(datastr)
-    for pkey in pkeys:
-        phash = checkphash(pkey, verbose=verbose)
-        if not phash:
-            continue
 
-        ckey = None
-        for kfilter in kfilters:
-            bkey = kfilter(pkey).encode()
-            try:
-                if b"-----BEGIN OPENSSH PRIVATE KEY-----" in bkey:
-                    ckey = serialization.load_ssh_private_key(bkey, password=None)
-                else:
-                    ckey = serialization.load_pem_private_key(bkey, password=None)
-            # ValueError: various key parsing issues
-            # TypeError: missing password
-            # UnsupportedAlgorithm: unusual curves etc. (e.g. secp224k1)
-            except (ValueError, TypeError, UnsupportedAlgorithm):
+    if "PRIVATE KEY-----" in datastr:
+        pkeys = rex.findall(datastr)
+        for pkey in pkeys:
+            phash = checkphash(pkey, verbose=verbose)
+            if not phash:
                 continue
-            ckeys.append(ckey)
-            break
-        if not ckey:
-            writeperr(perr, pkey, phash, verbose=verbose)
 
-    jkeys = jrex.findall(datastr)
-    for jkey in jkeys:
-        phash = checkphash(jkey, verbose=verbose)
-        if not phash:
-            continue
-
-        for kfilter in kfilters:
-            jfkey = kfilter(jkey)
-            ckey = getjwk(jfkey)
-            if ckey:
+            ckey = None
+            for kfilter in kfilters:
+                bkey = kfilter(pkey).encode()
+                try:
+                    if b"-----BEGIN OPENSSH PRIVATE KEY-----" in bkey:
+                        ckey = serialization.load_ssh_private_key(bkey, password=None)
+                    else:
+                        ckey = serialization.load_pem_private_key(bkey, password=None)
+                # ValueError: various key parsing issues
+                # TypeError: missing password
+                # UnsupportedAlgorithm: unusual curves etc. (e.g. secp224k1)
+                except (ValueError, TypeError, UnsupportedAlgorithm):
+                    continue
                 ckeys.append(ckey)
                 break
-        if not ckey:
-            writeperr(perr, jkey, phash, verbose=verbose)
+            if not ckey:
+                writeperr(perr, pkey, phash, verbose=verbose)
 
-    xkeys = xrex.findall(datastr)
-    for xkey in xkeys:
-        phash = checkphash(xkey, verbose=verbose)
-        if not phash:
-            continue
+    if '"kty"' in datastr:
+        jkeys = jrex.findall(datastr)
+        for jkey in jkeys:
+            phash = checkphash(jkey, verbose=verbose)
+            if not phash:
+                continue
 
-        for kfilter in kfilters:
-            xfkey = kfilter(xkey)
-            ckey = getxkms(xfkey)
-            if ckey:
-                ckeys.append(ckey)
-                break
-        if not ckey:
-            writeperr(perr, xkey, phash, verbose=verbose)
+            for kfilter in kfilters:
+                jfkey = kfilter(jkey)
+                ckey = getjwk(jfkey)
+                if ckey:
+                    ckeys.append(ckey)
+                    break
+            if not ckey:
+                writeperr(perr, jkey, phash, verbose=verbose)
+
+    if "<RSAKeyPair" in datastr:
+        xkeys = xrex.findall(datastr)
+        for xkey in xkeys:
+            phash = checkphash(xkey, verbose=verbose)
+            if not phash:
+                continue
+
+            for kfilter in kfilters:
+                xfkey = kfilter(xkey)
+                ckey = getxkms(xfkey)
+                if ckey:
+                    ckeys.append(ckey)
+                    break
+            if not ckey:
+                writeperr(perr, xkey, phash, verbose=verbose)
 
     if DNSPRE in datastr:
         dkeys = datastr.split(DNSPRE)
