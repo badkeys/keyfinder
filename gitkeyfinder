@@ -32,6 +32,8 @@ shortd = {
     "gitlab.com": "lab",
 }
 
+print(f"Looking for keys in {args.repo}")
+
 if "://" in args.repo:
     rep = pygit2.clone_repository(args.repo, tmpdir)
     up = urllib.parse.urlparse(args.repo)
