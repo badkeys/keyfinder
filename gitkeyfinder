@@ -4,6 +4,7 @@ import argparse
 import logging
 import os
 import shutil
+import subprocess
 import tempfile
 import urllib
 
@@ -42,7 +43,10 @@ print(f"Looking for keys in {args.repo}")
 
 if "://" in args.repo:
     logging.info("Cloning repo %s", args.repo)
-    rep = pygit2.clone_repository(args.repo, tmpdir)
+    # Call git directly, as cloning with libgit2/pygit2 is
+    # very slow: https://github.com/libgit2/libgit2/issues/4674
+    subprocess.check_output(["git", "clone", args.repo, tmpdir])
+    rep = pygit2.Repository(tmpdir)
     up = urllib.parse.urlparse(args.repo)
     host = up.hostname
     if up.hostname in shortd:
