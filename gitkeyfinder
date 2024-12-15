@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import argparse
+import logging
 import os
 import shutil
 import tempfile
@@ -16,7 +17,12 @@ ap.add_argument("--keep", action="store_true", help="Don't delete tmpdir")
 ap.add_argument("-o", "--outdir", default="out", help="Output dir")
 ap.add_argument("-D", "--dupfile", help="Store duplicate information")
 ap.add_argument("--nobadkeys", action="store_true", help="Don't check with badkeys")
+ap.add_argument("--log", help="Logfile")
 args = ap.parse_args()
+
+if args.log:
+    logging.basicConfig(format="%(asctime)s - %(levelname)s - %(message)s",
+                        filename=args.log, level=logging.INFO)
 
 tmpdir = tempfile.mkdtemp(prefix="gitkf")
 
@@ -35,6 +41,7 @@ shortd = {
 print(f"Looking for keys in {args.repo}")
 
 if "://" in args.repo:
+    logging.info("Cloning repo %s", args.repo)
     rep = pygit2.clone_repository(args.repo, tmpdir)
     up = urllib.parse.urlparse(args.repo)
     host = up.hostname
@@ -45,17 +52,21 @@ else:
     rep = pygit2.Repository(args.repo)
     outdir = args.outdir
 
+logging.info("Checking repo object db")
+
 dd = rep.odb
 
 results = {}
 for oid in dd:
     o = rep.get(oid)
     if isinstance(o, pygit2.Blob):
+        logging.info("Checking %s", oid)
         keys = keyfinder.findkeys(o.read_raw(), usebk=usebk)
         if keys:
             results[str(oid)] = keys
             print(f"found key(s) in {oid}")
 
+logging.info("Finding filenames")
 fnames = {}
 for oid in dd:
     o = rep.get(oid)
@@ -65,6 +76,7 @@ for oid in dd:
             if gid in results and id not in fnames:
                 fnames[gid] = x.name
 
+logging.info("Writing keys")
 for gitid, v in results.items():
     for spki, key in v.items():
         fn = fnames.get(gitid, gitid)
