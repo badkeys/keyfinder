@@ -12,7 +12,6 @@ import re
 import sys
 import urllib.parse
 import xml.etree.ElementTree
-import warnings
 
 import lxml.html
 import requests
