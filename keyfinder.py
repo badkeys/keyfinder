@@ -38,6 +38,9 @@ jrex = re.compile(jrex_t, flags=re.MULTILINE | re.DOTALL)
 xrex_t = r"(?=(<RSAKeyPair.*?</RSAKeyPair>))"
 xrex = re.compile(xrex_t, flags=re.MULTILINE | re.DOTALL)
 
+DEFAULTUA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+             "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.3")
+
 DNSPRE = "Private-key-format:"
 
 dups = set()
@@ -488,6 +491,7 @@ if __name__ == "__main__":
     ap.add_argument("--nobadkeys", action="store_true", help="Don't check with badkeys")
     ap.add_argument("-D", "--dupfile", help="Store duplicate information")
     ap.add_argument("-q", "--quiet", action="store_true")
+    ap.add_argument("--useragent", help="User agent for URL mode")
     args = ap.parse_args()
 
     if args.nobadkeys:
@@ -504,6 +508,10 @@ if __name__ == "__main__":
         load_dupfile(args.dupfile)
 
     if args.url:
+        if args.useragent:
+            rheaders = {"User-Agent": args.useragent}
+        else:
+            rheaders = {"User-Agent": DEFAULTUA}
         for url in args.input:
             if verbose:
                 print(f"Checking {url}")
@@ -511,7 +519,7 @@ if __name__ == "__main__":
             today = datetime.datetime.now(tz=datetime.UTC).date().isoformat()
             meta = f"url: {url}\ndate: {today}\n\n"
             try:
-                r = requests.get(url, timeout=60, verify=False)
+                r = requests.get(url, timeout=60, verify=False, headers=rheaders)
             except requests.exceptions.ConnectionError:
                 print(f"Connection error with {url}")
                 continue
