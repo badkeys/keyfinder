@@ -68,7 +68,7 @@ def filter_unesc_multi(inkey):
 
 
 def filter_html(inkey):
-    return lxml.html.document_fromstring(inkey).text_content()
+    return lxml.html.document_fromstring(inkey.encode()).text_content()
 
 
 # Filter characters that should not appear in a PEM structure
@@ -428,7 +428,7 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
             print(f"Found key {shorthash}")
         akeys[spkisha256] = xkey
     if "<!DOCTYPE html" in datastr or "<html" in datastr or "<HTML" in datastr:
-        h2txt = lxml.html.document_fromstring(datastr).text_content().encode()
+        h2txt = lxml.html.document_fromstring(datastr.encode()).text_content().encode()
         akeys |= findkeys(h2txt, perr=perr, usebk=usebk, verbose=verbose)
 
     return akeys
