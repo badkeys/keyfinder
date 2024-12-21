@@ -14,7 +14,7 @@ import urllib.parse
 import xml.etree.ElementTree
 import warnings
 
-import bs4
+import lxml.html
 import requests
 import urllib3
 from cryptography.exceptions import UnsupportedAlgorithm
@@ -68,8 +68,7 @@ def filter_unesc_multi(inkey):
 
 
 def filter_html(inkey):
-    html = bs4.BeautifulSoup(inkey, "lxml")
-    return html.get_text()
+    return lxml.html.document_fromstring(inkey).text_content()
 
 
 # Filter characters that should not appear in a PEM structure
@@ -429,7 +428,7 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
             print(f"Found key {shorthash}")
         akeys[spkisha256] = xkey
     if "<!DOCTYPE html" in datastr or "<html" in datastr or "<HTML" in datastr:
-        h2txt = bs4.BeautifulSoup(datastr, "lxml").get_text().encode()
+        h2txt = lxml.html.document_fromstring(datastr).text_content().encode()
         akeys |= findkeys(h2txt, perr=perr, usebk=usebk, verbose=verbose)
 
     return akeys
@@ -499,9 +498,6 @@ if __name__ == "__main__":
     if not args.outdir:
         print("WARNING: No outdir given, will not write keys")
 
-    # Prevents BeautifulSoup warnings, e.g., when content only
-    # contains a single URL or a filename.
-    warnings.filterwarnings("ignore", category=bs4.MarkupResemblesLocatorWarning)
     # Disable TLS certificate verification warning.
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
