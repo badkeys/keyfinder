@@ -211,6 +211,8 @@ def getjwk(kstr):
     except json.decoder.JSONDecodeError:
         return False
     if {"n", "e", "d"} <= j.keys():
+        if not all(isinstance(j[x], str) for x in ["n", "d", "e"]):
+            return False
         try:
             n = ub64toint(j["n"])
             e = ub64toint(j["e"])
@@ -221,6 +223,8 @@ def getjwk(kstr):
     # y value does not exist for all curve types, and
     # we do not need it, so ignore
     if {"x", "d", "crv"} <= j.keys():
+        if not all(isinstance(j[x], str) for x in ["x", "d", "crv"]):
+            return False
         if j["crv"] in ["Ed25519", "X25519", "Ed448", "X448"]:
             try:
                 d = ub64tobin(j["d"])
