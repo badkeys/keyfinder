@@ -92,5 +92,5 @@ if args.keep:
 else:
     shutil.rmtree(tmpdir)
 
-    if args.dupfile:
-        keyfinder.write_dupfile(args.dupfile)
+if args.dupfile:
+    keyfinder.write_dupfile(args.dupfile)
