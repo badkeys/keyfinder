@@ -439,6 +439,8 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
             h2txt = lxml.html.document_fromstring(datastr.encode()).text_content().encode()
         except lxml.etree.ParserError:
             pass
+        except UnicodeDecodeError:  # can happen with invalid charset metadata
+            pass
         else:
             akeys |= findkeys(h2txt, perr=perr, usebk=usebk, verbose=verbose)
 
