@@ -14,6 +14,7 @@ import urllib.parse
 import xml.etree.ElementTree
 
 import lxml.html
+import lxml.etree
 import requests
 import urllib3
 from cryptography.exceptions import UnsupportedAlgorithm
@@ -434,8 +435,12 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
             print(f"Found key {shorthash}")
         akeys[spkisha256] = xkey
     if "<!DOCTYPE html" in datastr or "<html" in datastr or "<HTML" in datastr:
-        h2txt = lxml.html.document_fromstring(datastr.encode()).text_content().encode()
-        akeys |= findkeys(h2txt, perr=perr, usebk=usebk, verbose=verbose)
+        try:
+            h2txt = lxml.html.document_fromstring(datastr.encode()).text_content().encode()
+        except lxml.etree.ParserError:
+            pass
+        else:
+            akeys |= findkeys(h2txt, perr=perr, usebk=usebk, verbose=verbose)
 
     return akeys
 
