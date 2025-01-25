@@ -51,7 +51,9 @@ if "://" in args.repo:
     host = up.hostname
     if up.hostname in shortd:
         host = shortd[up.hostname]
-    outdir = f"{args.outdir}/{host}/{up.path}"
+    # make sure we do not have hidden directory names
+    mypath = up.path.replace("/.", "/_")
+    outdir = f"{args.outdir}/{host}/{mypath}"
 else:
     rep = pygit2.Repository(args.repo)
     outdir = args.outdir
