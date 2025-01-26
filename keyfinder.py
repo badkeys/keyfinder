@@ -29,20 +29,21 @@ except ImportError:
     print("WARNING: Could not load badkeys, not checking for known keys")
     usebk = False
 
-rex_t = r"-----BEGIN[A-Z ]* PRIVATE KEY-----.*?-----END[A-Z ]* PRIVATE KEY-----"
+rex_t = b"-----BEGIN[A-Z ]* PRIVATE KEY-----.*?-----END[A-Z ]* PRIVATE KEY-----"
 rex = re.compile(rex_t, flags=re.MULTILINE | re.DOTALL)
 
 # regexp for JSON Web Keys (JWK)
-jrex_t = r'{[^{}]*"kty"[^}]*}'
+jrex_t = b'{[^{}]*"kty"[^}]*}'
 jrex = re.compile(jrex_t, flags=re.MULTILINE | re.DOTALL)
 
-xrex_t = r"(?=(<RSAKeyPair.*?</RSAKeyPair>))"
+xrex_t = b"(?=(<RSAKeyPair.*?</RSAKeyPair>))"
 xrex = re.compile(xrex_t, flags=re.MULTILINE | re.DOTALL)
 
 DEFAULTUA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
              "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.3")
 
 DNSPRE = "Private-key-format:"
+DNSPRE_B = b"Private-key-format:"
 
 dups = set()
 pdups = set()
@@ -161,7 +162,7 @@ def getdnsseckey(kstr):
 
 
 def checkphash(fragment, verbose=True):
-    phash = hashlib.sha256(fragment.encode()).digest()
+    phash = hashlib.sha256(fragment).digest()
     if phash in pdups:
         if verbose:
             short = binascii.hexlify(phash).decode()[0:16]
@@ -310,14 +311,13 @@ def getxkms(kstr):
 
 
 def findkeys(data, perr=None, usebk=False, verbose=False):
-    datastr = data.decode(errors="replace", encoding="ascii")
-
     ckeys = []
 
-    if "PRIVATE KEY-----" in datastr:
-        pkeys = rex.findall(datastr)
-        for pkey in pkeys:
-            phash = checkphash(pkey, verbose=verbose)
+    if b"PRIVATE KEY-----" in data:
+        pkeys = rex.findall(data)
+        for pkey_b in pkeys:
+            pkey = pkey_b.decode()
+            phash = checkphash(pkey_b, verbose=verbose)
             if not phash:
                 continue
 
@@ -339,10 +339,11 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
             if not ckey:
                 writeperr(perr, pkey, phash, verbose=verbose)
 
-    if '"kty"' in datastr:
-        jkeys = jrex.findall(datastr)
-        for jkey in jkeys:
-            phash = checkphash(jkey, verbose=verbose)
+    if b'"kty"' in data:
+        jkeys = jrex.findall(data)
+        for jkey_b in jkeys:
+            jkey = jkey_b.decode()
+            phash = checkphash(jkey_b, verbose=verbose)
             if not phash:
                 continue
 
@@ -355,10 +356,11 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
             if not ckey:
                 writeperr(perr, jkey, phash, verbose=verbose)
 
-    if "<RSAKeyPair" in datastr:
-        xkeys = xrex.findall(datastr)
-        for xkey in xkeys:
-            phash = checkphash(xkey, verbose=verbose)
+    if b"<RSAKeyPair" in data:
+        xkeys = xrex.findall(data)
+        for xkey_b in xkeys:
+            xkey = xkey_b.decode()
+            phash = checkphash(xkey_b, verbose=verbose)
             if not phash:
                 continue
 
@@ -371,11 +373,12 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
             if not ckey:
                 writeperr(perr, xkey, phash, verbose=verbose)
 
-    if DNSPRE in datastr:
-        dkeys = datastr.split(DNSPRE)
+    if DNSPRE_B in data:
+        dkeys = data.split(DNSPRE_B)
         for keyfrag in dkeys[1:]:
-            dkey = DNSPRE + keyfrag
-            phash = checkphash(dkey, verbose=verbose)
+            dkey_b = DNSPRE_B + keyfrag
+            dkey = dkey_b.decode()
+            phash = checkphash(dkey_b, verbose=verbose)
             if not phash:
                 continue
 
@@ -434,9 +437,9 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
         if verbose:
             print(f"Found key {shorthash}")
         akeys[spkisha256] = xkey
-    if "<!DOCTYPE html" in datastr or "<html" in datastr or "<HTML" in datastr:
+    if b"<!DOCTYPE html" in data or b"<html" in data or b"<HTML" in data:
         try:
-            h2txt = lxml.html.document_fromstring(datastr.encode()).text_content().encode()
+            h2txt = lxml.html.document_fromstring(data).text_content().encode()
         except lxml.etree.ParserError:
             pass
         except UnicodeDecodeError:  # can happen with invalid charset metadata
