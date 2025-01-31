@@ -258,7 +258,9 @@ def getjwk(kstr):
         try:
             d = ub64toint(j["d"])
             x = ub64toint(j["x"])
-        except binascii.Error:
+        except (binascii.Error, ValueError):
+            # Probably a Python bug that we need to catch ValueError here:
+            # https://github.com/python/cpython/issues/129505
             return False
         if d == 0:
             return False
@@ -317,7 +319,7 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
     if b"PRIVATE KEY-----" in data:
         pkeys = rex.findall(data)
         for pkey_b in pkeys:
-            pkey = pkey_b.decode()
+            pkey = pkey_b.decode(errors="replace")
             phash = checkphash(pkey_b, verbose=verbose)
             if not phash:
                 continue
@@ -343,7 +345,7 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
     if b'"kty"' in data:
         jkeys = jrex.findall(data)
         for jkey_b in jkeys:
-            jkey = jkey_b.decode()
+            jkey = jkey_b.decode(errors="replace")
             phash = checkphash(jkey_b, verbose=verbose)
             if not phash:
                 continue
@@ -360,7 +362,7 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
     if b"<RSAKeyPair" in data or b"<RSAKeyValue" in data:
         xkeys = xrex.findall(data)
         for xkey_b in xkeys:
-            xkey = xkey_b.decode()
+            xkey = xkey_b.decode(errors="replace")
             phash = checkphash(xkey_b, verbose=verbose)
             if not phash:
                 continue
@@ -378,7 +380,7 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
         dkeys = data.split(DNSPRE_B)
         for keyfrag in dkeys[1:]:
             dkey_b = DNSPRE_B + keyfrag
-            dkey = dkey_b.decode()
+            dkey = dkey_b.decode(errors="replace")
             phash = checkphash(dkey_b, verbose=verbose)
             if not phash:
                 continue
