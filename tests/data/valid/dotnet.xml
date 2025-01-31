@@ -1,0 +1,14 @@
+<!--
+  RFC 9500 example key converted to .NET XML key with ToXmlString()
+  spkisha256:9a9e5b0f404f4e2d4386e38b04ac91e535946dc2a7f8d84a31404b476e5c35e1
+-->
+<RSAKeyValue>
+  <Modulus>sNGDUqiPU9VRb0bCDno2fX3ois9UoBn23vV6ubRM7dsiQrG8oPsbXLgrMDYXamOQNWTexutB2y+Px4f05S4RSeMzR1cpc/Zgw8d8qeCCHCtpW+eunX0w9AeREPSKrm+LcC1HSykAgX8oZiSb7BKisZuCeEFoCPga4fz5t3eKYj8=</Modulus>
+  <Exponent>AQAB</Exponent>
+  <P>6dhuTcNKmFp+x1pvVKdc5FE55FJAs4arcR23kbzZhxihO68hjCRJNkZoB1bLUKbL7hWOJSFEmRIwHA1BSREYRQ==</P>
+  <Q>wZH6O1ULORp8sHKDdidyleYcZU8L7y9Y3OXJYqELfddfBgFUZeVQduRmJj7ryu0g0uurOTE+i8VnMg/ostxisw==</Q>
+  <DP>5zrgN3y4slYprq66D5c+v3WiLSc4W0z7Ees0raNz5aZxKDdQkOcAje6oxzkH6kREurQNzqFK16GoeNSSjdGdkQ==</DP>
+  <DQ>QZl5FhZyIT4Kt7l3N9mSiZ5cTTEGuF5xXRs6roQpYtJUT7KvqYCXTlOFEr0MJ89I6nIXquA3dCLIID0n/UWW5Q==</DQ>
+  <InverseQ>uZ1/j01NRV8fukYtmQouhIxCjB6+4B3AAYTIp2WDrTefaa2vVHVUMPY8QlPRu3jMm9IyZDQAgLhMGpF94Itu2w==</InverseQ>
+  <D>SC6fj6TkLfMNdYHLQqG9kOlPfys4fstarpZD7X+fUBJ/H/7y5DzeZLGCYAIU+QeAHWv6TfZIQjReW7Qy00RFJdgwFlTFRCsKXhG5x+IB+jL0Grr08KbgPPDgy4JmxirRHZVtU8lGbkiZX+omDIU28EHLNWL6rFEcTWao/tERspE=</D>
+</RSAKeyValue>

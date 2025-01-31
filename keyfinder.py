@@ -36,7 +36,7 @@ rex = re.compile(rex_t, flags=re.MULTILINE | re.DOTALL)
 jrex_t = b'{[^{}]*"kty"[^}]*}'
 jrex = re.compile(jrex_t, flags=re.MULTILINE | re.DOTALL)
 
-xrex_t = b"(?=(<RSAKeyPair.*?</RSAKeyPair>))"
+xrex_t = b"(?=(<(?:RSAKeyPair|RSAKeyValue).*?</(?:RSAKeyPair|RSAKeyValue)>))"
 xrex = re.compile(xrex_t, flags=re.MULTILINE | re.DOTALL)
 
 DEFAULTUA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -281,7 +281,8 @@ def getjwk(kstr):
     return False
 
 
-def getxkms(kstr):
+# Supports XKMS 2.0, XKMS draft version, .NET XML keys
+def getxmlkey(kstr):
     # remove draft-style namespaces
     xkstr = kstr.replace("ds:", "")
     try:
@@ -356,7 +357,7 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
             if not ckey:
                 writeperr(perr, jkey, phash, verbose=verbose)
 
-    if b"<RSAKeyPair" in data:
+    if b"<RSAKeyPair" in data or b"<RSAKeyValue" in data:
         xkeys = xrex.findall(data)
         for xkey_b in xkeys:
             xkey = xkey_b.decode()
@@ -366,7 +367,7 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
 
             for kfilter in kfilters:
                 xfkey = kfilter(xkey)
-                ckey = getxkms(xfkey)
+                ckey = getxmlkey(xfkey)
                 if ckey:
                     ckeys.append(ckey)
                     break
