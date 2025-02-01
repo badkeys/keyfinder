@@ -314,7 +314,11 @@ def getxmlkey(kstr):
         d = int.from_bytes(base64.b64decode(d), byteorder="big")
     except (binascii.Error, ValueError):
         return None
-    return makersa(n, e, d)
+    try:
+        return makersa(n, e, d)
+    except ValueError:
+        # Invalid RSA values
+        return None
 
 
 def findkeys(data, perr=None, usebk=False, verbose=False):
