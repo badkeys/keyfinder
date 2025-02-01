@@ -125,10 +125,14 @@ def getdnsseckey(kstr):
                                byteorder="big")
             d = int.from_bytes(base64.b64decode(kdata["PrivateExponent"]),
                                byteorder="big")
-            key = makersa(n, e, d)
-        except (ValueError, binascii.Error):
-            # ValueError caused by invalid RSA values
+        except (binascii.Error, ValueError):
             # binascii.Error caused by invalid base64
+            # ValueError caused by non-ASCII characters
+            return False
+        try:
+            key = makersa(n, e, d)
+        except ValueError:
+            # caused by invalid RSA values
             return False
         return key
 
