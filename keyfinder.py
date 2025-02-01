@@ -17,9 +17,9 @@ import lxml.html
 import lxml.etree
 import requests
 import urllib3
-from cryptography.exceptions import UnsupportedAlgorithm
-from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives.asymmetric import ec, ed448, ed25519
+from cryptography.exceptions import InvalidSignature, UnsupportedAlgorithm
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.asymmetric import dsa, ec, ed448, ed25519
 from cryptography.hazmat.primitives.asymmetric import rsa, x448, x25519
 
 usebk = True
@@ -417,6 +417,18 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
         if isinstance(ckey, rsa.RSAPrivateKey) and ckey.key_size > 5000:
             # skip very large RSA keys
             continue
+        if isinstance(ckey, (ec.EllipticCurvePrivateKey, dsa.DSAPrivateKey)):
+            # skip invalid DSA/ECDSA keys
+            if isinstance(ckey, ec.EllipticCurvePrivateKey):
+                alg = ec.ECDSA(hashes.SHA256())
+            else:
+                alg = hashes.SHA256()
+            try:
+                sig = ckey.sign(b"2u_Yg7", alg)
+                ckey.public_key().verify(sig, b"2u_Yg7", alg)
+            except (ValueError, InvalidSignature):
+                continue
+
         spki = ckey.public_key().public_bytes(
             encoding=serialization.Encoding.DER,
             format=serialization.PublicFormat.SubjectPublicKeyInfo,
