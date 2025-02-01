@@ -1,0 +1,11 @@
+<RSAKeyPair xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2002/03/xkms#">
+<!-- XKMS key with binary garbage data -->
+<Modulus>sÔ¶ç”Q{FTH</Modulus>
+<Exponent>AQAB</Exponent>
+<P>Xgjziw==</P>
+<Q>30OIuw==</Q>
+<DP>c8y+Rw==</DP>
+<DQ>Enz9Bw==</DQ>
+<InverseQ>jXsByw==</InverseQ>
+<D>TValP0==</D>
+</RSAKeyPair>
