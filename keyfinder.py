@@ -198,9 +198,10 @@ def makersa(n, e, d):
 
 
 def ub64tobin(b64):
-    # convert urssafe base64 to int and fix padding first
-    fb64 = b64.replace(" ", "")
-    pad = "=" * ((-len(fb64)) % 4)
+    # JSON Web Keys use urlsafe base64 without padding,
+    # therefore, we have to fix the padding first
+    fb64 = b64.replace(" ", "").encode()
+    pad = b"=" * ((-len(fb64)) % 4)
     return base64.urlsafe_b64decode(fb64 + pad)
 
 
