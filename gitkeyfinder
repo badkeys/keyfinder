@@ -45,7 +45,7 @@ if "://" in args.repo:
     logging.info("Cloning repo %s", args.repo)
     # Call git directly, as cloning with libgit2/pygit2 is
     # very slow: https://github.com/libgit2/libgit2/issues/4674
-    subprocess.check_output(["git", "clone", args.repo, tmpdir])
+    subprocess.check_output(["git", "clone", args.repo, tmpdir], env={"GIT_TERMINAL_PROMPT": "0"})
     rep = pygit2.Repository(tmpdir)
     up = urllib.parse.urlparse(args.repo)
     host = up.hostname
