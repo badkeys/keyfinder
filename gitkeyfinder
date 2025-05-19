@@ -24,6 +24,7 @@ args = ap.parse_args()
 if args.log:
     logging.basicConfig(format="%(asctime)s - %(levelname)s - %(message)s",
                         filename=args.log, level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 tmpdir = tempfile.mkdtemp(prefix="gitkf")
 
@@ -42,7 +43,7 @@ shortd = {
 print(f"Looking for keys in {args.repo}")
 
 if "://" in args.repo:
-    logging.info("Cloning repo %s", args.repo)
+    logger.info("Cloning repo %s", args.repo)
     # Call git directly, as cloning with libgit2/pygit2 is
     # very slow: https://github.com/libgit2/libgit2/issues/4674
     subprocess.check_output(["git", "clone", args.repo, tmpdir], env={"GIT_TERMINAL_PROMPT": "0"})
@@ -58,7 +59,7 @@ else:
     rep = pygit2.Repository(args.repo)
     outdir = args.outdir
 
-logging.info("Checking repo object db")
+logger.info("Checking repo object db")
 
 dd = rep.odb
 
@@ -66,13 +67,13 @@ results = {}
 for oid in dd:
     o = rep.get(oid)
     if isinstance(o, pygit2.Blob):
-        logging.info("Checking %s", oid)
+        logger.info("Checking %s", oid)
         keys = keyfinder.findkeys(o.read_raw(), usebk=usebk)
         if keys:
             results[str(oid)] = keys
             print(f"found key(s) in {oid}")
 
-logging.info("Finding filenames")
+logger.info("Finding filenames")
 fnames = {}
 for oid in dd:
     o = rep.get(oid)
@@ -82,7 +83,7 @@ for oid in dd:
             if gid in results and id not in fnames:
                 fnames[gid] = x.name
 
-logging.info("Writing keys")
+logger.info("Writing keys")
 for gitid, v in results.items():
     for spki, key in v.items():
         fn = fnames.get(gitid, gitid)
