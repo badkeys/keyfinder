@@ -22,12 +22,11 @@ from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import dsa, ec, ed448, ed25519
 from cryptography.hazmat.primitives.asymmetric import rsa, x448, x25519
 
-usebk = True
+havebk = True
 try:
     import badkeys
 except ImportError:
-    print("WARNING: Could not load badkeys, not checking for known keys")
-    usebk = False
+    havebk = False
 
 rex_t = b"-----BEGIN[A-Z ]* PRIVATE KEY-----.*?-----END[A-Z ]* PRIVATE KEY-----"
 rex = re.compile(rex_t, flags=re.MULTILINE | re.DOTALL)
@@ -532,8 +531,10 @@ if __name__ == "__main__":
     ap.add_argument("--useragent", help="User agent for URL mode")
     args = ap.parse_args()
 
-    if args.nobadkeys:
-        usebk = False
+    if not havebk and not args.nobadkeys:
+        sys.exit("ERROR: badkeys not available (you may use --nobadkeys)")
+    usebk = not args.nobadkeys
+
     verbose = not args.quiet
 
     if not args.outdir:
