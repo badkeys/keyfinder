@@ -476,7 +476,7 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
 def writekey(key, fn, path, spki):
     if not os.path.isdir(path):
         os.makedirs(path)
-    suffix = base64.urlsafe_b64encode(spki).decode()[0:3]
+    suffix = base64.urlsafe_b64encode(spki).decode()[0:5]
     # avoid problematic filenames
     ffn = re.sub(r"(^[.-]|[^A-Za-z0-9._-])", "_", fn)
     fp = f"{path}/{ffn}.{suffix}.key"
