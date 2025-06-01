@@ -28,14 +28,14 @@ try:
 except ImportError:
     havebk = False
 
-rex_t = b"-----BEGIN[A-Z ]* PRIVATE KEY-----.*?-----END[A-Z ]* PRIVATE KEY-----"
+rex_t = b"-----BEGIN[A-Z ]{0,20} PRIVATE KEY-----.{1,10000}?-----END[A-Z ]{0,20} PRIVATE KEY-----"
 rex = re.compile(rex_t, flags=re.MULTILINE | re.DOTALL)
 
 # regexp for JSON Web Keys (JWK)
 jrex_t = b'{[^{}]*"kty"[^}]*}'
 jrex = re.compile(jrex_t, flags=re.MULTILINE | re.DOTALL)
 
-xrex_t = b"(?=(<(?:RSAKeyPair|RSAKeyValue).*?</(?:RSAKeyPair|RSAKeyValue)>))"
+xrex_t = b"(?=(<(?:RSAKeyPair|RSAKeyValue).{1,10000}?</(?:RSAKeyPair|RSAKeyValue)>))"
 xrex = re.compile(xrex_t, flags=re.MULTILINE | re.DOTALL)
 
 DEFAULTUA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -387,7 +387,7 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
     if DNSPRE_B in data:
         dkeys = data.split(DNSPRE_B)
         for keyfrag in dkeys[1:]:
-            dkey_b = DNSPRE_B + keyfrag
+            dkey_b = DNSPRE_B + keyfrag[0:10000]
             dkey = dkey_b.decode(errors="replace")
             phash = checkphash(dkey_b, verbose=verbose)
             if not phash:
