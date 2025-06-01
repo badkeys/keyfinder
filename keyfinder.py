@@ -13,14 +13,14 @@ import sys
 import urllib.parse
 import xml.etree.ElementTree
 
-import lxml.html
 import lxml.etree
+import lxml.html
 import requests
 import urllib3
 from cryptography.exceptions import InvalidSignature, UnsupportedAlgorithm
 from cryptography.hazmat.primitives import hashes, serialization
-from cryptography.hazmat.primitives.asymmetric import dsa, ec, ed448, ed25519
-from cryptography.hazmat.primitives.asymmetric import rsa, x448, x25519
+from cryptography.hazmat.primitives.asymmetric import (dsa, ec, ed448, ed25519,
+                                                       rsa, x448, x25519)
 
 havebk = True
 try:
