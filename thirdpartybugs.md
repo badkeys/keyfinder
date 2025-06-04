@@ -23,6 +23,8 @@ Bugs:
   https://github.com/pyca/cryptography/pull/12272)
 * [cryptography.exceptions.InternalError when importing malformed / too large ed25519
   key](https://github.com/pyca/cryptography/issues/12746)
+* [Reject invalid values in various functions for partial RSA key recovery, avoid
+  unexpected exceptions](https://github.com/pyca/cryptography/pull/13032)
 
 Improvements / feature requests:
 
