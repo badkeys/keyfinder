@@ -362,7 +362,10 @@ def getputtykey(kstr):
         e = int.from_bytes(pubval[1], "big")
         n = int.from_bytes(pubval[2], "big")
         d = int.from_bytes(privval[0], "big")
-        return makersa(n, e, d)
+        try:
+            return makersa(n, e, d)
+        except ValueError:
+            return None
     # algorithm not yet supported or unknown
     return None
 
