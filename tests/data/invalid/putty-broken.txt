@@ -1,0 +1,40 @@
+Various defect PuTTY keys.
+
+
+
+PuTTY-User-Key-File-3: ssh-rsa
+Encryption: none
+Comment: Length not a number
+Public-Lines: not_a_number
+AAAAB3NzaC1yc2EAAAADAQABAAAAQQDBXBrGscXYIrrhpgpFSJsuIffQqk+48GN6
+Private-Lines: not_a_number
+AAAAQFEeOMV+swd3mnsr00c5rJBwA6zwpj1p6/HcbDcIgxh86zCizfovxwGpvvex
+Private-MAC: ec00f086739769522a268bafb45855c883270e4cc6fee707c12a38f30ff40d5c
+
+
+PuTTY-User-Key-File-3: ssh-rsa
+Encryption: none
+Comment: No public key
+Private-Lines: 1
+AAAAQFEeOMV+swd3mnsr00c5rJBwA6zwpj1p6/HcbDcIgxh86zCizfovxwGpvvex
+Private-MAC: ec00f086739769522a268bafb45855c883270e4cc6fee707c12a38f30ff40d5c
+
+
+PuTTY-User-Key-File-3: ssh-rsa
+Encryption: none
+Comment: Public and private key mismatch
+Public-Lines: 4
+AAAAB3NzaC1yc2EAAAADAQABAAAAgQDPPMBtHVoPkXV+Z6jq1LsgfTELVWpy2BVU
+ffJMPH06LL0cJSQOaIeVzIojzWtpauB7IylZKlAjB5f429tRuoUiedCwMLKblWAq
+Zt6eHWpCNZJ7lONcIEwnmh2nAccKk83Lp/VH3tgAS/43DQoX2sndnYh+g8522Pzw
+g7EGWspzzw==
+Private-Lines: 8
+AAAAgEgun4+k5C3zDXWBy0KhvZDpT38rOH7LWq6WQ+1/n1ASfx/+8uQ83mSxgmAC
+FPkHgB1r+k32SEI0Xlu0MtNERSXYMBZUxUQrCl4RucfiAfoy9Bq69PCm4Dzw4MuC
+ZsYq0R2VbVPJRm5ImV/qJgyFNvBByzVi+qxRHE1mqP7REbKRAAAAQQDp2G5Nw0qY
+Wn7HWm9Up1zkUTnkUkCzhqtxHbeRvNmHGKE7ryGMJEk2RmgHVstQpsvuFY4lIUSZ
+EjAcDUFJERhFAAAAQQDBkfo7VQs5GnywcoN2J3KV5hxlTwvvL1jc5clioQt9118G
+AVRl5VB25GYmPuvK7SDS66s5MT6LxWcyD+iy3GKzAAAAQQC5nX+PTU1FXx+6Ri2Z
+Ci6EjEKMHr7gHcABhMinZYOtN59pra9UdVQw9jxCU9G7eMyb0jJkNACAuEwakX3g
+i27b
+Private-MAC: 0872e256de613c29a1bcb7abcd720b87ab725882da94aff7d60438186aa57d7b
