@@ -366,7 +366,6 @@ def getputtykey(kstr):
             return makersa(n, e, d)
         except ValueError:
             return None
-    print(pubval)
     if pubval[0] == b"ecdsa-sha2-nistp256":
         d = int.from_bytes(privval[0], "big")
         return ec.derive_private_key(d, ec.SECP256R1())
