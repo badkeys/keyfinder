@@ -321,6 +321,52 @@ def getxmlkey(kstr):
         return None
 
 
+def puttympi(b64in):  # FIXME testen mit allen truncated values
+    raw = base64.b64decode(b64in.encode())
+
+    i = 0
+    vals = []
+    while i < len(raw):
+        mlen = int.from_bytes(raw[i : i + 4], "big")
+        i += 4
+        vals.append(raw[i : i + mlen])
+        i += mlen
+    return vals
+
+
+def getputtykey(kstr):
+    klines = kstr.split("\n")
+    public_offset = private_offset = None
+    for i, line in enumerate(klines):
+        if line.startswith("Public-Lines:"):
+            num = line.split(" ")[-1]
+            try:
+                public_len = int(num)
+            except ValueError:
+                return None
+            public_offset = i + 1
+        if line.startswith("Private-Lines:"):
+            num = line.split(" ")[-1]
+            try:
+                private_len = int(num)
+            except ValueError:
+                return None
+            private_offset = i + 1
+    if not public_offset or not private_offset:
+        return None
+    pubnum = "".join(klines[public_offset:public_offset + public_len])
+    pubval = puttympi(pubnum)
+    privnum = "".join(klines[private_offset:private_offset + private_len])
+    privval = puttympi(privnum)
+    if pubval[0] == b"ssh-rsa":
+        e = int.from_bytes(pubval[1], "big")
+        n = int.from_bytes(pubval[2], "big")
+        d = int.from_bytes(privval[0], "big")
+        return makersa(n, e, d)
+    # algorithm not yet supported or unknown
+    return None
+
+
 def findkeys(data, perr=None, usebk=False, verbose=False):
     ckeys = []
 
@@ -401,6 +447,24 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
                     break
             if not ckey:
                 writeperr(perr, dkey, phash, verbose=verbose)
+
+    if b"PuTTY-User-Key-File-" in data:
+        pkeys = data.split(b"PuTTY-User-Key-File-")
+        for keyfrag in pkeys[1:]:
+            pkey_b = b"PuTTY-User-Key-File-" + keyfrag[0:10000]
+            pkey = pkey_b.decode(errors="replace")
+            phash = checkphash(pkey_b, verbose=verbose)
+            if not phash:
+                continue
+
+            for kfilter in kfilters:
+                pfkey = kfilter(pkey)
+                ckey = getputtykey(pfkey)
+                if ckey:
+                    ckeys.append(ckey)
+                    break
+            if not ckey:
+                writeperr(perr, pkey, phash, verbose=verbose)
 
     # check for binary keys
     # TODO: find keys at arbitrary point in files
