@@ -398,6 +398,15 @@ def getputtykey(kstr):
         dsapriv = dsa.DSAPrivateNumbers(x, dsapub)
         return dsapriv.private_key()
 
+    if pubval[0] == b"ssh-ed25519":
+        if len(privval[0]) != 32:
+            return None
+        return ed25519.Ed25519PrivateKey.from_private_bytes(privval[0])
+    if pubval[0] == b"ssh-ed448":
+        if len(privval[0]) != 57:
+            return None
+        return ed448.Ed448PrivateKey.from_private_bytes(privval[0])
+
     # algorithm not yet supported or unknown
     return None
 
