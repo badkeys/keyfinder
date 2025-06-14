@@ -322,7 +322,10 @@ def getxmlkey(kstr):
 
 
 def puttympi(b64in):  # FIXME testen mit allen truncated values
-    raw = base64.b64decode(b64in.encode())
+    try:
+        raw = base64.b64decode(b64in.encode())
+    except binascii.Error:
+        return None
 
     i = 0
     vals = []
@@ -356,6 +359,8 @@ def getputtykey(kstr):
         return None
     pubnum = "".join(klines[public_offset:public_offset + public_len])
     pubval = puttympi(pubnum)
+    if not pubval:
+        return None
     privnum = "".join(klines[private_offset:private_offset + private_len])
     privval = puttympi(privnum)
     if pubval[0] == b"ssh-rsa":
