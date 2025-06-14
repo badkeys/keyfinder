@@ -67,3 +67,14 @@ Public-Lines: 1
 AAAAAA=
 Private-Lines: 1
 AAAAAA=
+
+
+PuTTY-User-Key-File-3: ecdsa-sha2-nistp256
+Encryption: none
+Comment: Empty private key
+Public-Lines: 3
+AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBBqIyIYV1Df7
+uL+eGUKhkp8oVicGrmwr05nnsb+20ennW5K0qkKReuHGG3Ae8DXD/nvjAJy6/lov
+cTFskC3PDQA=
+Private-Lines: 0
+Private-MAC: f0039826c63fc3f6f921d7b3850a263e9f22b00964f406dbf7fab45fbcae623f

@@ -359,10 +359,10 @@ def getputtykey(kstr):
         return None
     pubnum = "".join(klines[public_offset:public_offset + public_len])
     pubval = puttympi(pubnum)
-    if not pubval:
-        return None
     privnum = "".join(klines[private_offset:private_offset + private_len])
     privval = puttympi(privnum)
+    if not pubval or not privval:
+        return None
     if pubval[0] == b"ssh-rsa":
         e = int.from_bytes(pubval[1], "big")
         n = int.from_bytes(pubval[2], "big")
