@@ -393,10 +393,13 @@ def getputtykey(kstr):
         g = int.from_bytes(pubval[3], "big")
         y = int.from_bytes(pubval[4], "big")
         x = int.from_bytes(privval[0], "big")
-        dsaparams = dsa.DSAParameterNumbers(p, q, g)
-        dsapub = dsa.DSAPublicNumbers(y, dsaparams)
-        dsapriv = dsa.DSAPrivateNumbers(x, dsapub)
-        return dsapriv.private_key()
+        try:
+            dsaparams = dsa.DSAParameterNumbers(p, q, g)
+            dsapub = dsa.DSAPublicNumbers(y, dsaparams)
+            dsapriv = dsa.DSAPrivateNumbers(x, dsapub)
+            return dsapriv.private_key()
+        except ValueError:
+            return None
 
     if pubval[0] == b"ssh-ed25519":
         if len(privval[0]) != 32:
