@@ -366,15 +366,19 @@ def getputtykey(kstr):
             return makersa(n, e, d)
         except ValueError:
             return None
+    curve = None
     if pubval[0] == b"ecdsa-sha2-nistp256":
+        curve = ec.SECP256R1()
+    elif pubval[0] == b"ecdsa-sha2-nistp384":
+        curve = ec.SECP384R1()
+    elif pubval[0] == b"ecdsa-sha2-nistp521":
+        curve = ec.SECP521R1()
+    if curve:
         d = int.from_bytes(privval[0], "big")
-        return ec.derive_private_key(d, ec.SECP256R1())
-    if pubval[0] == b"ecdsa-sha2-nistp384":
-        d = int.from_bytes(privval[0], "big")
-        return ec.derive_private_key(d, ec.SECP384R1())
-    if pubval[0] == b"ecdsa-sha2-nistp521":
-        d = int.from_bytes(privval[0], "big")
-        return ec.derive_private_key(d, ec.SECP521R1())
+        try:
+            return ec.derive_private_key(d, ec.SECP256R1())
+        except ValueError:
+            return None
 
     # algorithm not yet supported or unknown
     return None
