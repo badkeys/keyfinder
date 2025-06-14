@@ -385,6 +385,19 @@ def getputtykey(kstr):
         except ValueError:
             return None
 
+    if pubval[0] == b"ssh-dss":
+        if len(pubval) < 5:
+            return None
+        p = int.from_bytes(pubval[1], "big")
+        q = int.from_bytes(pubval[2], "big")
+        g = int.from_bytes(pubval[3], "big")
+        y = int.from_bytes(pubval[4], "big")
+        x = int.from_bytes(privval[0], "big")
+        dsaparams = dsa.DSAParameterNumbers(p, q, g)
+        dsapub = dsa.DSAPublicNumbers(y, dsaparams)
+        dsapriv = dsa.DSAPrivateNumbers(x, dsapub)
+        return dsapriv.private_key()
+
     # algorithm not yet supported or unknown
     return None
 
