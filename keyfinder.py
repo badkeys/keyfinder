@@ -348,13 +348,15 @@ def getputtykey(kstr):
             except ValueError:
                 return None
             public_offset = i + 1
-        if line.startswith("Private-Lines:"):
+        elif line.startswith("Private-Lines:"):
             num = line.split(" ")[-1]
             try:
                 private_len = int(num)
             except ValueError:
                 return None
             private_offset = i + 1
+        if public_offset and private_offset:
+            break
     if not public_offset or not private_offset:
         return None
     pubnum = "".join(klines[public_offset:public_offset + public_len])
