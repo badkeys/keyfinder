@@ -1,0 +1,72 @@
+PuTTY private key format as described here:
+https://tartarus.org/~simon/putty-snapshots/htmldoc/AppendixC.html
+
+
+spkisha256:9a9e5b0f404f4e2d4386e38b04ac91e535946dc2a7f8d84a31404b476e5c35e1
+
+PuTTY-User-Key-File-3: ssh-rsa
+Encryption: none
+Comment: rsa1024-rfc9500
+Public-Lines: 4
+AAAAB3NzaC1yc2EAAAADAQABAAAAgQCw0YNSqI9T1VFvRsIOejZ9feiKz1SgGfbe
+9Xq5tEzt2yJCsbyg+xtcuCswNhdqY5A1ZN7G60HbL4/Hh/TlLhFJ4zNHVylz9mDD
+x3yp4IIcK2lb566dfTD0B5EQ9Iqub4twLUdLKQCBfyhmJJvsEqKxm4J4QWgI+Brh
+/Pm3d4piPw==
+Private-Lines: 8
+AAAAgEgun4+k5C3zDXWBy0KhvZDpT38rOH7LWq6WQ+1/n1ASfx/+8uQ83mSxgmAC
+FPkHgB1r+k32SEI0Xlu0MtNERSXYMBZUxUQrCl4RucfiAfoy9Bq69PCm4Dzw4MuC
+ZsYq0R2VbVPJRm5ImV/qJgyFNvBByzVi+qxRHE1mqP7REbKRAAAAQQDp2G5Nw0qY
+Wn7HWm9Up1zkUTnkUkCzhqtxHbeRvNmHGKE7ryGMJEk2RmgHVstQpsvuFY4lIUSZ
+EjAcDUFJERhFAAAAQQDBkfo7VQs5GnywcoN2J3KV5hxlTwvvL1jc5clioQt9118G
+AVRl5VB25GYmPuvK7SDS66s5MT6LxWcyD+iy3GKzAAAAQQC5nX+PTU1FXx+6Ri2Z
+Ci6EjEKMHr7gHcABhMinZYOtN59pra9UdVQw9jxCU9G7eMyb0jJkNACAuEwakX3g
+i27b
+Private-MAC: 00d202e78468f71b2eb57d7072eae2520e5ca0e3825ac872a1357461677cc909
+
+
+spkisha256:22e217a1004b8779923462c344b0890916a08cd6b71ab91c3dfee5d7f036d081
+
+PuTTY-User-Key-File-3: ssh-dss
+Encryption: none
+Comment: dsa1024-rfc6979
+Public-Lines: 10
+AAAAB3NzaC1kc3MAAACBAIb1ygPc/rIlBj/4MKDHabndnWFTrZHXzif3h8QyeLRH
+5lM7hrGL7W6KSLeEoUwlLFvg2/YLhtY4W9LxL7dj7Yhzq/0/W6LgqMClkILqwFaT
+XlKdr3xhBGeJnHet7fyEbIgYcLexmytY+b4FIaFwAuO91rhmhe6Qs9mhsCt4Kxd5
+AAAAFQCZb5Z/bI44jZ4o0B4gX7qVelaYsQAAAIAHsPklRhULYlFLt3HioMDOOH8D
+vabFa1BSCf8l/TwTPYm7zZfpBOCRFNmn3v3q38kHjqVE0uQBruzEC7n7v3j9h5la
+EKHCfLd4m1lLp++1xDJqn+WaBw4TbbdxdUZK3KQXvl3OL0DRCkajo5Q/Jqt/2cA5
+j/jHbuClaCaoqI8dvQAAAIBd9eAd7THQKX4nThaRwZL+WGj++eGahHdkVLEAzxb2
+U5IZWji5BSPiVC7mGHHARAy4fDIvxLTS7F4efsdm4b6NTOk1Q33BHDyP1CYziTPr
+/nOcs0ZfTTZoxeRzUIJTseaC9ly9xPrpPC6iEjkOVJBahuIiMXC0Tqp9pd2f/Pt/
+Ow==
+Private-Lines: 1
+AAAAFEEWAssZpszDRJTXnZjvHn7VryX3
+Private-MAC: 0c83a6030abeabedcce89ca1efe157710a08da10a3696ffac4a90b7f8834aab3
+
+
+spkisha256:b2b04340cfaee616ec9c2c62d261b208e54bb197498df52e8cadede23ac0ba5e
+
+PuTTY-User-Key-File-3: ecdsa-sha2-nistp256
+Encryption: none
+Comment: ecdsap256-rfc9500
+Public-Lines: 3
+AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEIlSPiPt4L/
+teyjdERSxyoeVY+9b3O+XkjpMjLMRcWxbEzRDEy41bihcTnpSILImSVymTQl9BQZ
+q36QpCpJQnI=
+Private-Lines: 1
+AAAAIQDmy1vdgKpFrpyV6MFUdmef/slTwWhR5xHnQ5OVicZPwQ==
+Private-MAC: f9c53f126b52fd978fecde45f5cb4391a64a0b8810ef1edbd9642a17b860ad84
+
+
+spkisha256:de5f0f8eeaeeb2a0d8aeb372acace509d41ed65282c37f42f7c9205b575ffe82
+
+PuTTY-User-Key-File-3: ssh-ed25519
+Encryption: none
+Comment: ed25519-rfc9216
+Public-Lines: 2
+AAAAC3NzaC1lZDI1NTE5AAAAIISBRn3Ij+uRf/zYOKGrNUhlBn5EoTdRHKn543ZP
+EkME
+Private-Lines: 1
+AAAAIAt889xRDvxNT8ak53T7tzKuSn6CQDe8fIdjrCiSFRcp
+Private-MAC: c2caf02319f062e7ee673cd3b9d7731e3f6ee25b2b0f2ebe45396f85a588d66c
