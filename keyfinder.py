@@ -340,7 +340,8 @@ def puttympi(b64in):  # FIXME testen mit allen truncated values
 def getputtykey(kstr):
     klines = kstr.split("\n")
     public_offset = private_offset = None
-    for i, line in enumerate(klines):
+    for i, xline in enumerate(klines):
+        line = xline.strip()
         if line.startswith("Public-Lines:"):
             num = line.split(" ")[-1]
             try:

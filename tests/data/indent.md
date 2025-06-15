@@ -1,0 +1,35 @@
+Markdown supports indenting code blocks:
+
+    # Source: RFC 5702
+    # spkihash:abb7947300f7c0025cf29b02d49a0baea816c9d8a8576be8310e3203a58a6235
+
+    PuTTY-User-Key-File-3: ssh-rsa
+    Encryption: none
+    Comment: rsa512-rfc5702
+    Public-Lines: 2
+    AAAAB3NzaC1yc2EAAAADAQABAAAAQQDBXBrGscXYIrrhpgpFSJsuIffQqk+48GN6
+    XsTxnJ1BbUdhYd+gaaJ3MLZGeHAILb3eELPD5MVHaeqfw5VJjm3Z
+    Private-Lines: 4
+    AAAAQFEeOMV+swd3mnsr00c5rJBwA6zwpj1p6/HcbDcIgxh86zCizfovxwGpvvex
+    8SClVjQx9m2vTH9UgPMbvXXB2QEAAAAhAOHPCLxbtQFVxlnhSyxYeb7O323c3Qul
+    PNn3bhOipElpAAAAIQDbNmkETxldWcvvhCMbjMg2UN8f4Q4S2MkndG1pgO6C8QAA
+    ACEAicQdNRjlZGPmuJm2TIadubcO8X7V4y07aVhX464tx8Q=
+    Private-MAC: ec00f086739769522a268bafb45855c883270e4cc6fee707c12a38f30ff40d5c
+
+
+Works with tabs, too:
+
+	# Source: RFC 4870
+        # spkihash:227bfc723ff9388fc564c11daaf9da45c1d4f4f6510f3320bfecdceabcf3e795
+	-----BEGIN RSA PRIVATE KEY-----
+	MIIByQIBAAJhAKJ2lzDLZ8XlVambQfMXn3LRGKOD5o6lMIgulclWjZwP56LRqdg5
+	ZX15bhc/GsvW8xW/R5Sh1NnkJNyL/cqY1a+GzzL47t7EXzVc+nRLWT1kwTvFNGIo
+	AUsFUq+J6+OprwIDAQABAmBOX0UaLdWWusYzNol++nNZ0RLAtr1/LKMX3tk1MkLH
+	+Ug13EzB2RZjjDOWlUOY98yxW9/hX05Uc9V5MPo+q2Lzg8wBtyRLqlORd7pfxYCn
+	Kapi2RPMcR1CxEJdXOkLCFECMQDTO0fzuShRvL8q0m5sitIHlLA/L+0+r9KaSRM/
+	3WQrmUpV+fAC3C31XGjhHv2EuAkCMQDE5U2nP2ZWVlSbxOKBqX724amoL7rrkUew
+	ti9TEjfaBndGKF2yYF7/+g53ZowRkfcCME/xOJr58VN17pejSl1T8Icj88wGNHCs
+	FDWGAH4EKNwDSMnfLMG4WMBqd9rzYpkvGQIwLhAHDq2CX4hq2tZAt1zT2yYH7tTb
+	weiHAQxeHe0RK+x/UuZ2pRhuoSv63mwbMLEZAjAP2vy6Yn+f9SKw2mKuj1zLjEhG
+	6ppw+nKD50ncnPoP322UMxVNG4Eah0GYJ4DLP0U=
+	-----END RSA PRIVATE KEY-----
