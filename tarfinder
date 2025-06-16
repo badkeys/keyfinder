@@ -1,0 +1,46 @@
+#!/usr/bin/python3
+#
+# SPDX-License-Identifier: MIT
+
+import argparse
+import os
+import shutil
+import subprocess
+import tempfile
+
+import keyfinder
+
+ap = argparse.ArgumentParser()
+ap.add_argument("input", nargs="+")
+ap.add_argument("-o", "--outdir", required=True)
+ap.add_argument("-p", "--parseerr", help="Output dir for unparsable candidates")
+ap.add_argument("--nobadkeys", action="store_true", help="Don't check with badkeys")
+ap.add_argument("-D", "--dupfile", help="Store duplicate information")
+ap.add_argument("-q", "--quiet", action="store_true")
+args = ap.parse_args()
+
+if args.dupfile and os.path.exists(args.dupfile):
+    keyfinder.load_dupfile(args.dupfile)
+
+usebk = not args.nobadkeys
+verbose = not args.quiet
+
+
+for path in args.input:
+    for tp, _, tfiles in os.walk(path):
+        for tfn in tfiles:
+            tfp = os.path.join(tp, tfn)
+            print(f"Looking for keys in {tfp}")
+            tmpd = tempfile.mkdtemp(prefix="tarfinder")
+            toutdir = os.path.join(args.outdir, tfn)
+            subprocess.call(["bsdtar", "-C", tmpd, "--no-fflags", "-xf", tfp])
+            for p, _, files in os.walk(tmpd):
+                for fn in files:
+                    fp = os.path.join(p, fn)
+                    if not os.path.isfile(fp):
+                        continue
+                    keyfinder.findinfile(fp, toutdir, args.parseerr, usebk, verbose)
+            shutil.rmtree(tmpd)
+
+if args.dupfile:
+    keyfinder.write_dupfile(args.dupfile)
