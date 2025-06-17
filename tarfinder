@@ -33,7 +33,8 @@ for path in args.input:
             print(f"Looking for keys in {tfp}")
             tmpd = tempfile.mkdtemp(prefix="tarfinder")
             toutdir = os.path.join(args.outdir, tfn)
-            subprocess.call(["bsdtar", "-C", tmpd, "--no-fflags", "-xf", tfp])
+            subprocess.call(["bsdtar", "-C", tmpd, "--no-same-permissions", "--no-same-owner",
+                             "--passphrase", "password", "-xf", tfp])
             for p, _, files in os.walk(tmpd):
                 for fn in files:
                     fp = os.path.join(p, fn)
