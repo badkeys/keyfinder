@@ -17,7 +17,7 @@ import lxml.etree
 import lxml.html
 import requests
 import urllib3
-from cryptography.exceptions import InvalidSignature, UnsupportedAlgorithm
+from cryptography.exceptions import InvalidSignature, UnsupportedAlgorithm, InternalError
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import (dsa, ec, ed448, ed25519,
                                                        rsa, x448, x25519)
@@ -440,6 +440,10 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
                 # TypeError: missing password
                 # UnsupportedAlgorithm: unusual curves etc. (e.g. secp224k1)
                 except (ValueError, TypeError, UnsupportedAlgorithm):
+                    continue
+                # Temporary workaround for upstream bug, please remove once fixed!
+                # https://github.com/pyca/cryptography/issues/13050
+                except InternalError:
                     continue
                 ckeys.append(ckey)
                 break
