@@ -607,6 +607,10 @@ def writekey(key, fn, path, spki):
 
 
 def findinfile(fp, outdir, parseerr, usebk, verbose):
+    fstat = os.stat(fp)
+    # Skip very large files (>10G)
+    if fstat.st_size > 10 * 1024 ** 3:
+        return
     content = pathlib.Path(f"{fp}").read_bytes()
     keys = findkeys(content, perr=parseerr, usebk=usebk, verbose=verbose)
     if not outdir:
