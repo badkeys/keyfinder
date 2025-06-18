@@ -522,15 +522,29 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
             if not ckey:
                 writeperr(perr, pkey, phash, verbose=verbose)
 
-    # check for binary keys
-    # TODO: find keys at arbitrary point in files
-    if data[0:2] == b"\x30\x82":
-        # looks like PKCS #1 or PKCS #8
+    # find binary keys
+    ind = -1
+    while True:
         try:
-            dkey = serialization.load_der_private_key(data, password=None)
+            ind = data.index(b"\x30", ind + 1)
+        except ValueError:
+            break
+        if ind > len(data) - 40:
+            # implausibly small
+            break
+        # basic ASN.1 parsing to get SEQUENCE length
+        if (data[ind + 1] | 0x80) == 0:
+            continue
+        llen = data[ind + 1] & 0x7f
+        if llen > 2:
+            # implausibly long
+            continue
+        slen = int.from_bytes(data[ind + 2 : ind + 2 + llen], "big")
+        try:
+            dkey = serialization.load_der_private_key(data[ind : ind + llen + slen + 2], None)
             ckeys.append(dkey)
         except (ValueError, TypeError, UnsupportedAlgorithm):
-            pass
+            continue
 
     akeys = {}
     for ckey in ckeys:
