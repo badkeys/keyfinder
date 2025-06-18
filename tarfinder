@@ -4,6 +4,7 @@
 
 import argparse
 import os
+import re
 import shutil
 import subprocess
 import tempfile
@@ -50,7 +51,9 @@ for path in args.input:
     for tp, _, tfiles in os.walk(path):
         for tfn in tfiles:
             tfp = os.path.join(tp, tfn)
-            toutdir = os.path.join(args.outdir, tfn)
+            # Avoid url-unsafe characters in dirname
+            ffn = re.sub(r"(^[.-]|[^A-Za-z0-9._-])", "_", tfn)
+            toutdir = os.path.join(args.outdir, ffn)
             print(f"Looking for keys in {tfp}")
             findinarchive(tfp, toutdir, args.parseerr, usebk, verbose)
 
