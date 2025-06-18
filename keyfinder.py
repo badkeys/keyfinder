@@ -654,11 +654,9 @@ def load_dupfile(dupfile):
 
 def write_dupfile(dupfile):
     with open(dupfile, "wb") as f:
-        for khash in sorted(dups):
-            f.write(khash)
+        f.writelines(sorted(dups))
         f.write(b"\x00" * 32)
-        for phash in sorted(pdups):
-            f.write(phash)
+        f.writelines(sorted(pdups))
 
 
 if __name__ == "__main__":
