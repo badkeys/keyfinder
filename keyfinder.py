@@ -533,13 +533,17 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
             # implausibly small
             break
         # basic ASN.1 parsing to get SEQUENCE length
-        if (data[ind + 1] | 0x80) == 0:
+        if (data[ind + 1] & 0x80) == 0:
+            llen = 0
+            slen = data[ind + 1]
+        else:
+            llen = data[ind + 1] & 0x7f
+            if llen > 2:
+                # implausibly long
+                continue
+            slen = int.from_bytes(data[ind + 2 : ind + 2 + llen], "big")
+        if data[ind + llen + 2 : ind + llen + 4] != b"\x02\x01":
             continue
-        llen = data[ind + 1] & 0x7f
-        if llen > 2:
-            # implausibly long
-            continue
-        slen = int.from_bytes(data[ind + 2 : ind + 2 + llen], "big")
         try:
             dkey = serialization.load_der_private_key(data[ind : ind + llen + slen + 2], None)
             ckeys.append(dkey)
