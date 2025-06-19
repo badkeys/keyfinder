@@ -546,6 +546,10 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
             continue
         try:
             dkey = serialization.load_der_private_key(data[ind : ind + llen + slen + 2], None)
+            # Arbitrary binary data can look like a valid ed25519/ed448 key,
+            # therefore, only accept them at the beginning of a file
+            if ind > 0 and isinstance(dkey, ed25519.Ed25519PrivateKey|ed448.Ed448PrivateKey):
+                continue
             ckeys.append(dkey)
         except (ValueError, TypeError, UnsupportedAlgorithm):
             continue
