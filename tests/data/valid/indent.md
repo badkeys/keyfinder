@@ -1,7 +1,7 @@
 Markdown supports indenting code blocks:
 
     # Source: RFC 5702
-    # spkihash:abb7947300f7c0025cf29b02d49a0baea816c9d8a8576be8310e3203a58a6235
+    # spkisha256:abb7947300f7c0025cf29b02d49a0baea816c9d8a8576be8310e3203a58a6235
 
     PuTTY-User-Key-File-3: ssh-rsa
     Encryption: none
@@ -20,7 +20,7 @@ Markdown supports indenting code blocks:
 Works with tabs, too:
 
 	# Source: RFC 4870
-        # spkihash:227bfc723ff9388fc564c11daaf9da45c1d4f4f6510f3320bfecdceabcf3e795
+        # spkisha256:227bfc723ff9388fc564c11daaf9da45c1d4f4f6510f3320bfecdceabcf3e795
 	-----BEGIN RSA PRIVATE KEY-----
 	MIIByQIBAAJhAKJ2lzDLZ8XlVambQfMXn3LRGKOD5o6lMIgulclWjZwP56LRqdg5
 	ZX15bhc/GsvW8xW/R5Sh1NnkJNyL/cqY1a+GzzL47t7EXzVc+nRLWT1kwTvFNGIo
