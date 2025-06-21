@@ -523,12 +523,23 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
                 writeperr(perr, pkey, phash, verbose=verbose)
 
     # find binary keys
-    ind = -1
+    start = 1  # 2 is earliest possible value
+    c = 0
     while True:
         try:
-            ind = data.index(b"\x30", ind + 1)
+            start = data.index(b"\x02\x01", start + 1)
         except ValueError:
             break
+        c += 1
+        # Stop on absurdely large number of matches
+        if c > 50000:
+            break
+        if start - 4 >= 0 and data[start - 4] == 0x30:
+            ind = start - 4
+        elif start - 2 >= 0 and data[start - 2] == 0x30:
+            ind = start - 2
+        else:
+            continue
         if ind > len(data) - 40:
             # implausibly small
             break
