@@ -6,28 +6,46 @@ import argparse
 import os
 import re
 import shutil
+import stat
 import subprocess
 import tempfile
 
 import keyfinder
 
 
-def findinarchive(tfp, toutdir, parseerr, usebk, verbose, depth=0):
+def findinarchive(tfp, toutdir, parseerr, usebk, verbose, firmware=False, depth=0):
     # Avoid deep recursion
     if depth >= 2:
         return
 
     tmpd = tempfile.mkdtemp(prefix="tarfinder")
-    subprocess.call(["bsdtar", "-C", tmpd, "--no-same-permissions", "--no-same-owner",
-                     "--passphrase", "password", "-xf", tfp])
-    for p, _, files in os.walk(tmpd):
+    if firmware:
+        subprocess.call(["binwalk3", "-eM", "-C", tmpd, tfp])
+        # fix permissions
+        for root, dirs, files in os.walk(tmpd):
+            for d in dirs:
+                dp = os.path.join(root, d)
+                if os.path.islink(dp):
+                    continue
+                if not os.access(dp, os.R_OK | os.W_OK | os.X_OK):
+                    os.chmod(dp, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
+            for f in files:
+                fp = os.path.join(root, f)
+                if os.path.islink(fp):
+                    continue
+                if not os.access(fp, os.R_OK | os.W_OK):
+                    os.chmod(fp, stat.S_IRUSR | stat.S_IWUSR)
+    else:
+        subprocess.call(["bsdtar", "-C", tmpd, "--no-same-permissions", "--no-same-owner",
+                         "--passphrase", "password", "-xf", tfp])
+    for p, _, files in os.walk(tmpd, topdown=False):
         for fn in files:
             fp = os.path.join(p, fn)
             if not os.path.isfile(fp):
                 continue
             # recursive search with common archive types
-            if fn.endswith((".zip", ".tar.gz", ".tar.bz2", ".tar.xz")):
-                findinarchive(fp, toutdir, parseerr, usebk, verbose, depth + 1)
+            if fn.endswith((".zip", ".tar.gz", ".tar.bz2", ".tar.xz")) and not firmware:
+                findinarchive(fp, toutdir, parseerr, usebk, verbose, depth=depth + 1)
             keyfinder.findinfile(fp, toutdir, parseerr, usebk, verbose)
     shutil.rmtree(tmpd)
 
@@ -39,6 +57,7 @@ ap.add_argument("-p", "--parseerr", help="Output dir for unparsable candidates")
 ap.add_argument("--nobadkeys", action="store_true", help="Don't check with badkeys")
 ap.add_argument("-D", "--dupfile", help="Store duplicate information")
 ap.add_argument("-q", "--quiet", action="store_true")
+ap.add_argument("--firmware", action="store_true", help="Firmware extraction with binwalk")
 args = ap.parse_args()
 
 if args.dupfile and os.path.exists(args.dupfile):
@@ -55,7 +74,7 @@ for path in args.input:
             ffn = re.sub(r"(^[.-]|[^A-Za-z0-9._-])", "_", tfn)
             toutdir = os.path.join(args.outdir, ffn)
             print(f"Looking for keys in {tfp}")
-            findinarchive(tfp, toutdir, args.parseerr, usebk, verbose)
+            findinarchive(tfp, toutdir, args.parseerr, usebk, verbose, args.firmware)
 
 
 if args.dupfile:
