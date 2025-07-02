@@ -1,0 +1,8 @@
+#!/bin/bash
+#
+# SPDX-License-Identifier: MIT
+#
+# Minimal wrapper to replace proprietary unrar with bsdtar/libarchive.
+# Expects filename as last parameter, ignores other parameters.
+
+bsdtar -xf "${!#}"
