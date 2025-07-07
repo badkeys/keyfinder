@@ -534,8 +534,10 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
         # Stop on absurdely large number of matches
         if c > 50000:
             break
-        if start - 4 >= 0 and data[start - 4] == 0x30:
+        if start - 4 >= 0 and data[start - 4:start - 2] == b"\x30\x82":
             ind = start - 4
+        elif start - 3 >= 0 and data[start - 3:start - 1] == b"\x30\x81":
+            ind = start - 3
         elif start - 2 >= 0 and data[start - 2] == 0x30:
             ind = start - 2
         else:
