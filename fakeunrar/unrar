@@ -4,5 +4,9 @@
 #
 # Minimal wrapper to replace proprietary unrar with bsdtar/libarchive.
 # Expects filename as last parameter, ignores other parameters.
+#
+# Note: This was originally intended as a workaround for an issue with
+# binwalk, which has since been fixed. You may still use this script
+# if you want to avoid using the non-free unrar tool.
 
 bsdtar -xf "${!#}"

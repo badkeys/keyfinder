@@ -20,7 +20,7 @@ def findinarchive(tfp, toutdir, parseerr, usebk, verbose, firmware=False, depth=
 
     tmpd = tempfile.mkdtemp(prefix="tarfinder")
     if firmware:
-        subprocess.call(["binwalk", "--exclude=png", "-eM", "-d", tmpd, tfp])
+        subprocess.call(["binwalk", "-eM", "-d", tmpd, tfp])
         # fix permissions
         for root, dirs, files in os.walk(tmpd):
             for d in dirs:

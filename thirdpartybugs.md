@@ -36,3 +36,9 @@ Improvements / feature requests:
   load_ssh_private_key()](https://github.com/pyca/cryptography/issues/12070)
 
 All fixed in cryptography 45.0.0 and above.
+
+binwalk
+=======
+
+* [PNG file causes hang / infinite loop](https://github.com/ReFirmLabs/binwalk/issues/877)
+* [RAR file with password causes hang](https://github.com/ReFirmLabs/binwalk/issues/878)
