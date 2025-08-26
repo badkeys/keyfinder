@@ -569,7 +569,7 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
 
     akeys = {}
     for ckey in ckeys:
-        if hasattr(ckey, 'key_size') and ckey.key_size > 5000:
+        if hasattr(ckey, "key_size") and ckey.key_size > 5000:
             # skip very large keys
             continue
         if isinstance(ckey, (ec.EllipticCurvePrivateKey, dsa.DSAPrivateKey)):
