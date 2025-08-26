@@ -569,8 +569,8 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
 
     akeys = {}
     for ckey in ckeys:
-        if isinstance(ckey, rsa.RSAPrivateKey) and ckey.key_size > 5000:
-            # skip very large RSA keys
+        if hasattr(ckey, 'key_size') and ckey.key_size > 5000:
+            # skip very large keys
             continue
         if isinstance(ckey, (ec.EllipticCurvePrivateKey, dsa.DSAPrivateKey)):
             # skip invalid DSA/ECDSA keys
