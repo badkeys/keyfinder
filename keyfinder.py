@@ -148,6 +148,8 @@ def getdnsseckey(kstr):
             if len(ecbin) > 32:
                 return False
             ecval = int.from_bytes(ecbin, byteorder="big")
+            if ecval == 0:
+                return False
             return ec.derive_private_key(ecval, ec.SECP256R1())
         if algid == 14:
             if len(ecbin) > 48:

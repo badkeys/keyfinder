@@ -96,3 +96,11 @@ ECDSA with invalid base64 padding:
 Private-key-format: v1.2
 Algorithm: 13 (ECDSAP256SHA256)
 PrivateKey: GU6SnQ/Ou+xC5RumuIUIuJZteXT2z0O/ok1s38Et6mQ
+
+
+
+ECDSA with empty private key:
+
+Private-key-format: v1.3
+Algorithm: 13 (ECDSAP256SHA256)
+PrivateKey:
