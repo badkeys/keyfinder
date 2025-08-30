@@ -92,6 +92,22 @@ def filter_unesc_nopem(inkey):
     return filter_nopem(key)
 
 
+def filter_quotes_double(inkey):
+    nkey = ""
+    for k, v in enumerate(inkey.split('"')):
+        if (k % 2) == 0:
+            nkey += v
+    return filter_unesc(nkey)
+
+
+def filter_quotes_single(inkey):
+    nkey = ""
+    for k, v in enumerate(inkey.split("'")):
+        if (k % 2) == 0:
+            nkey += v
+    return filter_unesc(nkey)
+
+
 kfilters = [
     filter_none,
     filter_unesc,
@@ -99,6 +115,8 @@ kfilters = [
     filter_html,
     filter_nopem,
     filter_unesc_nopem,
+    filter_quotes_single,
+    filter_quotes_double,
 ]
 
 
