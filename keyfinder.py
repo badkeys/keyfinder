@@ -11,6 +11,7 @@ import json
 import os
 import pathlib
 import re
+import subprocess
 import sys
 import urllib.parse
 import xml.etree.ElementTree
@@ -644,6 +645,12 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
             pass
         else:
             akeys |= findkeys(h2txt, perr=perr, usebk=usebk, verbose=verbose)
+
+    if data[0:4] == b"%PDF":
+        fp = subprocess.Popen(["pdftotext", "-nopgbrk", "-raw", "-", "-"],
+                              stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+        pdftxt, _ = fp.communicate(input=data)
+        akeys |= findkeys(pdftxt, perr=perr, usebk=usebk, verbose=verbose)
 
     return akeys
 
