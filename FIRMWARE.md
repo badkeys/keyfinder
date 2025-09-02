@@ -51,6 +51,9 @@ also](https://bugs.gentoo.org/942397)).
 You should install at least `jefferson` and `uefi_firmware` from `pypi`/`pip` and make
 sure they are in the PATH.
 
+It is also recommended to have [dmg2img](https://github.com/Lekensteyn/dmg2img) in your
+path (can be manually compiled).
+
 You can check [these scripts](
 https://github.com/ReFirmLabs/binwalk/tree/master/dependencies) provided by `binwalk` to
 learn about additional dependencies.
