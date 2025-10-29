@@ -1,4 +1,8 @@
+/* spkisha256:ad32320cf6c596d884b05381ba573aba8ddd5749b4de8f4a23a79f9a89ddaeb2
+ */
+
 #include <stdio.h>
+
 int main() {
   char *kstring =
       ("{\"kty\":\"RSA\","
