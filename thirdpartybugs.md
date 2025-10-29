@@ -25,6 +25,8 @@ Bugs:
   key](https://github.com/pyca/cryptography/issues/12746)
 * [Reject invalid values in various functions for partial RSA key recovery, avoid
   unexpected exceptions](https://github.com/pyca/cryptography/pull/13032)
+* [Internal openssl error with too small DH key](
+  https://github.com/pyca/cryptography/issues/13050) (unreleased)
 
 Improvements / feature requests:
 
@@ -34,11 +36,14 @@ Improvements / feature requests:
   https://github.com/pyca/cryptography/issues/12307)
 * [Inconsistency with password behavior between load_pem_private_key() and
   load_ssh_private_key()](https://github.com/pyca/cryptography/issues/12070)
+* [Unexpected exception when loading unsupported key types (ValueError instead of
+  UnsupportedAlgorithm)](https://github.com/pyca/cryptography/issues/13746) (unreleased)
 
-All fixed in cryptography 45.0.0 and above.
+Remaining fixes expected in 0.47.x.
 
 binwalk
 =======
 
-* [PNG file causes hang / infinite loop](https://github.com/ReFirmLabs/binwalk/issues/877)
+* [PNG file causes hang / infinite loop](
+  https://github.com/ReFirmLabs/binwalk/issues/877)
 * [RAR file with password causes hang](https://github.com/ReFirmLabs/binwalk/issues/878)
