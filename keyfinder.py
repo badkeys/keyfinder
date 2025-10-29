@@ -34,7 +34,7 @@ rex_t = b"-----BEGIN[A-Z ]{0,20} PRIVATE KEY-----.{1,10000}?-----END[A-Z ]{0,20}
 rex = re.compile(rex_t, flags=re.MULTILINE | re.DOTALL)
 
 # regexp for JSON Web Keys (JWK)
-jrex_t = b'{[^{}]{0,10000}"kty"[^}]{1,10000}}'
+jrex_t = b'{[^{}]{0,10000}"kty\\\\?[^}]{1,10000}}'
 jrex = re.compile(jrex_t, flags=re.MULTILINE | re.DOTALL)
 
 xrex_t = b"(?=(<(?:RSAKeyPair|RSAKeyValue).{1,10000}?</(?:RSAKeyPair|RSAKeyValue)>))"
@@ -95,9 +95,16 @@ def filter_unesc_nopem(inkey):
 
 def filter_quotes_double(inkey):
     nkey = ""
-    for k, v in enumerate(inkey.split('"')):
-        if (k % 2) == 0:
+    switch = False
+    for v in inkey.split('"'):
+        if not switch:
             nkey += v
+            if len(v) > 0 and v[-1] == "\\":
+                nkey += '"'
+            else:
+                switch = True
+        else:
+            switch = False
     return filter_unesc(nkey)
 
 
@@ -472,7 +479,7 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
             if not ckey:
                 writeperr(perr, pkey, phash, verbose=verbose)
 
-    if b'"kty"' in data:
+    if b'"kty' in data:
         jkeys = jrex.findall(data)
         for jkey_b in jkeys:
             jkey = jkey_b.decode(errors="replace")
