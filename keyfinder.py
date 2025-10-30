@@ -30,7 +30,8 @@ try:
 except ImportError:
     havebk = False
 
-rex_t = b"(?=(-----BEGIN[A-Z ]{0,20} PRIVATE KEY-----.{1,10000}?-----END[A-Z ]{0,20} PRIVATE KEY-----))"
+rex_t = (b"(?=(-----BEGIN[A-Z ]{0,20} PRIVATE KEY-----.{1,10000}?"
+         b"-----END[A-Z ]{0,20} PRIVATE KEY-----))")
 rex = re.compile(rex_t, flags=re.MULTILINE | re.DOTALL)
 
 # regexp for JSON Web Keys (JWK)
