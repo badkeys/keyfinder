@@ -1,0 +1,14 @@
+We need a lookahead regular expression to avoid being confused
+by key fragments.
+
+spkisha256:acb1b8327fef995e2458fdf5e3c33b2dc0749feabd6a894cb9bda9d70ac06c24
+
+-----BEGIN EC PRIVATE KEY-----
+
+-----BEGIN EC PRIVATE KEY-----
+MIHcAgEBBEIB2STcygqIf42Zdno32HTmN6Esy0d9bghmU1ZpTWi3ZV5QaWOP3ntF
+yFQBPcd6NbGGVbhMlmpgIg1A+R7Z9RRYAuqgBwYFK4EEACOhgYkDgYYABAHQ/XJX
+qEx0f1YldcBzhdvr8vUr6lgIPbgv3RUx2KrjzIdf8C/3+i2iYNjrYtbS9dZJJ44y
+FzagYoy7swMItuYY2wD2KtIExkYDWbyBiriWG/Dw/A7FquikKBc85W8A3psVfB5c
+gsZPVi/K3vxKTCj200LPPvYW/ILTO3KFySHyvzb92A==
+-----END EC PRIVATE KEY-----
