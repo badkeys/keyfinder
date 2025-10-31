@@ -12,3 +12,20 @@ qEx0f1YldcBzhdvr8vUr6lgIPbgv3RUx2KrjzIdf8C/3+i2iYNjrYtbS9dZJJ44y
 FzagYoy7swMItuYY2wD2KtIExkYDWbyBiriWG/Dw/A7FquikKBc85W8A3psVfB5c
 gsZPVi/K3vxKTCj200LPPvYW/ILTO3KFySHyvzb92A==
 -----END EC PRIVATE KEY-----
+
+
+Same with JWK:
+
+spkisha256:51b944cdfa544d4c3273aa6bf350625a7dd53bbb6a71723274f538b19a207760
+
+{"kty":"EC",
+"crv":"P-256",
+
+{"kty":"EC",
+"crv":"P-256",
+"x":"MKBCTNIcKUSDii11ySs3526iDZ8AiTo7Tu6KPAqv7D4",
+"y":"4Etl6SRW2YiLUrN5vfvVHuhp7x8PxltmWWlbbM4IFyM",
+"d":"870MB6gfuTJ4HtUnUvYMyJpr5eUZNP4Bk43bVdj3eAE",
+"use":"enc",
+"kid":"1"}
+

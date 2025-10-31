@@ -35,7 +35,7 @@ rex_t = (b"(?=(-----BEGIN[A-Z ]{0,20} PRIVATE KEY-----.{1,10000}?"
 rex = re.compile(rex_t, flags=re.MULTILINE | re.DOTALL)
 
 # regexp for JSON Web Keys (JWK)
-jrex_t = b'{[^{}]{0,10000}"kty\\\\?[^}]{1,10000}}'
+jrex_t = b'(?=({[^{}]{0,10000}"kty\\\\?[^}]{1,10000}}))'
 jrex = re.compile(jrex_t, flags=re.MULTILINE | re.DOTALL)
 
 xrex_t = b"(?=(<(?:RSAKeyPair|RSAKeyValue).{1,10000}?</(?:RSAKeyPair|RSAKeyValue)>))"
