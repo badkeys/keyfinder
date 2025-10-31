@@ -22,6 +22,7 @@ jobs:
         run: |
           [ -e requirements.txt ] && pip install -r requirements.txt
           pip install pycodestyle pyupgrade pyflakes dlint pylint ruff
+          sudo apt-get -y install poppler-utils  # CUSTOM: needed for pdf parsing
       - name: Run tests
         run: |
           ./runpyci.sh
