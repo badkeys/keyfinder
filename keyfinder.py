@@ -89,6 +89,21 @@ def filter_nopem(inkey):
     return re.sub(r"\n+", r"\n", key, flags=re.MULTILINE)
 
 
+def filter_fixpem(inkey):
+    xkey = filter_nopem(inkey)
+    klines = xkey.split("\n")
+    if len(klines) < 3:
+        return ""
+    okey = [klines[0]]
+    for line in klines[1:-2]:
+        if len(line) == 64:
+            okey.append(line)
+    okey.append(klines[-2])
+    okey.append(klines[-1])
+    okey = "\n".join(okey)
+    return okey
+
+
 def filter_unesc_nopem(inkey):
     key = filter_unesc_multi(inkey)
     return filter_nopem(key)
@@ -124,6 +139,7 @@ kfilters = [
     filter_html,
     filter_nopem,
     filter_unesc_nopem,
+    filter_fixpem,
     filter_quotes_single,
     filter_quotes_double,
 ]
