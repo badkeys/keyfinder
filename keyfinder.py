@@ -100,8 +100,7 @@ def filter_fixpem(inkey):
             okey.append(line)
     okey.append(klines[-2])
     okey.append(klines[-1])
-    okey = "\n".join(okey)
-    return okey
+    return "\n".join(okey)
 
 
 def filter_unesc_nopem(inkey):
