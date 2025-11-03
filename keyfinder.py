@@ -74,7 +74,10 @@ def filter_unesc_multi(inkey):
 
 
 def filter_html(inkey):
-    return lxml.html.document_fromstring(inkey.encode()).text_content()
+    try:
+        return lxml.html.document_fromstring(inkey.encode()).text_content()
+    except (lxml.etree.ParserError, lxml.etree.XMLSyntaxError):
+        return ""
 
 
 # Filter characters that should not appear in a PEM structure
@@ -662,7 +665,7 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
     if b"<!DOCTYPE html" in data or b"<html" in data or b"<HTML" in data:
         try:
             h2txt = lxml.html.document_fromstring(data).text_content().encode()
-        except lxml.etree.ParserError:
+        except (lxml.etree.ParserError, lxml.etree.XMLSyntaxError):
             pass
         except UnicodeDecodeError:  # can happen with invalid charset metadata
             pass
