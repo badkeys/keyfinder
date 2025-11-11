@@ -22,6 +22,7 @@ jobs:
         run: |
           [ -e requirements.txt ] && pip install -r requirements.txt
           pip install pycodestyle pyupgrade pyflakes dlint pylint ruff
+          sudo apt-get update                    # CUSTOM: update debian package index
           sudo apt-get -y install poppler-utils  # CUSTOM: needed for pdf parsing
       - name: Run tests
         run: |
