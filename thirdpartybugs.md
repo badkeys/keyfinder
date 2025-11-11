@@ -26,7 +26,7 @@ Bugs:
 * [Reject invalid values in various functions for partial RSA key recovery, avoid
   unexpected exceptions](https://github.com/pyca/cryptography/pull/13032)
 * [Internal openssl error with too small DH key](
-  https://github.com/pyca/cryptography/issues/13050) (unreleased)
+  https://github.com/pyca/cryptography/issues/13050)
 
 Improvements / feature requests:
 
@@ -39,7 +39,7 @@ Improvements / feature requests:
 * [Unexpected exception when loading unsupported key types (ValueError instead of
   UnsupportedAlgorithm)](https://github.com/pyca/cryptography/issues/13746) (unreleased)
 
-Remaining fixes expected in 0.47.x.
+Most issues fixed in 46.0.3, remaining fixes expected in 47.x.
 
 binwalk
 =======
