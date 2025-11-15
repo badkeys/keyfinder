@@ -489,10 +489,6 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
                 # UnsupportedAlgorithm: unusual curves etc. (e.g. secp224k1)
                 except (ValueError, TypeError, UnsupportedAlgorithm):
                     continue
-                # Temporary workaround for upstream bug, please remove once fixed!
-                # https://github.com/pyca/cryptography/issues/13050
-                except InternalError:
-                    continue
                 ckeys.append(ckey)
                 break
             if not ckey:
