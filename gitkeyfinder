@@ -5,7 +5,6 @@
 import argparse
 import logging
 import os
-import shutil
 import subprocess
 import tempfile
 import urllib
@@ -16,7 +15,6 @@ import keyfinder
 
 ap = argparse.ArgumentParser()
 ap.add_argument("repo", help="URL or local path of git repository")
-ap.add_argument("--keep", action="store_true", help="Don't delete tmpdir")
 ap.add_argument("-o", "--outdir", default="out", help="Output dir")
 ap.add_argument("-D", "--dupfile", help="Store duplicate information")
 ap.add_argument("--nobadkeys", action="store_true", help="Don't check with badkeys")
@@ -28,7 +26,10 @@ if args.log:
                         filename=args.log, level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-tmpdir = tempfile.mkdtemp(prefix="gitkf")
+# By using tempfile.TemporaryDirectory, the temp dir will be automatically
+# cleaned up
+tmpdirobject = tempfile.TemporaryDirectory(prefix="gitkf")
+tmpdir = tmpdirobject.name
 
 if args.dupfile and os.path.exists(args.dupfile):
     keyfinder.load_dupfile(args.dupfile)
@@ -91,11 +92,6 @@ for gitid, v in results.items():
         fn = fnames.get(gitid, gitid)
         prefix = f"id: {gitid}\n\n"
         keyfinder.writekey(prefix + key, fn, outdir, spki)
-
-if args.keep:
-    print(f"Git clone / tmpdir not removed: {tmpdir}")
-else:
-    shutil.rmtree(tmpdir)
 
 if args.dupfile:
     keyfinder.write_dupfile(args.dupfile)
