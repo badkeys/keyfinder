@@ -47,3 +47,8 @@ binwalk
 * [PNG file causes hang / infinite loop](
   https://github.com/ReFirmLabs/binwalk/issues/877)
 * [RAR file with password causes hang](https://github.com/ReFirmLabs/binwalk/issues/878)
+
+other
+=====
+
+* [Poppler: Hang / probably endless loop](https://gitlab.freedesktop.org/poppler/poppler/-/issues/1644)
