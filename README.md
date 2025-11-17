@@ -10,4 +10,4 @@ about
 badkeys is a project by [Hanno Böck](https://hboeck.de). It is currently supported by
 [NLnet](https://nlnet.nl/project/badkeys/).
 
-More information can be found on the [badkeys web page]((https://badkeys.info).
+More information can be found on the [badkeys web page](https://badkeys.info).
