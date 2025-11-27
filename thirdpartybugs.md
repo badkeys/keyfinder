@@ -1,4 +1,4 @@
-During development, some bugs in Python and the Cryptography package were discovered.
+During development, some bugs in other software were discovered.
 
 Python
 ======
@@ -51,4 +51,5 @@ binwalk
 other
 =====
 
-* [Poppler: Hang / probably endless loop](https://gitlab.freedesktop.org/poppler/poppler/-/issues/1644)
+* [Poppler: Hang / probably endless loop](
+  https://gitlab.freedesktop.org/poppler/poppler/-/issues/1644)
