@@ -27,6 +27,8 @@ Bugs:
   unexpected exceptions](https://github.com/pyca/cryptography/pull/13032)
 * [Internal openssl error with too small DH key](
   https://github.com/pyca/cryptography/issues/13050)
+* [Malformed SSH ECDSA public key can create unexpected IndexError exception](
+  https://github.com/pyca/cryptography/issues/14084)
 
 Improvements / feature requests:
 
