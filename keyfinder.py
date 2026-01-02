@@ -351,7 +351,7 @@ def getxmlkey(kstr):
         e = tree.find("{*}PublicExponent")
     if d is None:
         d = tree.find("{*}PrivateExponent")
-    if None in [n, d, e]:
+    if None in [n, d, e] or None in [n.text, d.text, e.text]:
         return None
     n = n.text.replace(" ", "").replace("\n", "").replace("\r", "")
     e = e.text.replace(" ", "").replace("\n", "").replace("\r", "")
