@@ -157,8 +157,9 @@ def getdnsseckey(kstr):
         if ":" in kline:
             ikey = kline.split(":", 1)[0].strip()
             if ikey in kdata:  # if we see same value type multiple times, we want only the first
-                continue
-            kdata[ikey] = kline.split(":", 1)[1].strip()
+                ikey = None
+            else:
+                kdata[ikey] = kline.split(":", 1)[1].strip()
         elif ikey:
             kdata[ikey] += kline.strip()
 
