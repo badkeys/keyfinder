@@ -682,7 +682,11 @@ def writekey(key, fn, path, spki):
     if not os.path.isdir(path):
         os.makedirs(path)
     suffix = base64.urlsafe_b64encode(spki).decode()[0:5]
-    # avoid problematic filenames
+    # Avoid problematic filenames:
+    # * Only characters that are safe in URLs and filesystems
+    # * Avoid filenames starting with '.' (hidden files) or
+    #   '-' (possible confusion with commandline parameters)
+    # * Replace all problematic characters with "_"
     ffn = re.sub(r"(^[.-]|[^A-Za-z0-9._-])", "_", fn)
     fp = f"{path}/{ffn}.{suffix}.key"
     if os.path.exists(fp):
