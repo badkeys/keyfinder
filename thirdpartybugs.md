@@ -55,3 +55,5 @@ other
 
 * [Poppler: Hang / probably endless loop](
   https://gitlab.freedesktop.org/poppler/poppler/-/issues/1644)
+* [knot dns / keymgr: avoid segfault when using import-pem on a malformed key](
+  https://gitlab.nic.cz/knot/knot-dns/-/commit/847c031af234bfbd09d375b8ddf29fb0045fe4c1)
