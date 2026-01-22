@@ -57,3 +57,7 @@ other
   https://gitlab.freedesktop.org/poppler/poppler/-/issues/1644)
 * [knot dns / keymgr: avoid segfault when using import-pem on a malformed key](
   https://gitlab.nic.cz/knot/knot-dns/-/commit/847c031af234bfbd09d375b8ddf29fb0045fe4c1)
+* [sshamble: RSA keys with large e value are not captured](
+  https://github.com/runZeroInc/sshamble/issues/43)
+* [zgrab2: SSH RSA keys with large e value are not captured (and X.509 keys not
+  parsed)](https://github.com/zmap/zgrab2/issues/670)
