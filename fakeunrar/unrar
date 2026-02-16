@@ -9,4 +9,4 @@
 # binwalk, which has since been fixed. You may still use this script
 # if you want to avoid using the non-free unrar tool.
 
-bsdtar -xf "${!#}"
+bsdtar --passphrase=password -xf "${!#}"
