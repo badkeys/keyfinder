@@ -466,6 +466,27 @@ def getputtykey(kstr):
     return None
 
 
+def dropbearkey(data):
+    start = 0
+    if data.startswith(b"\x00\x00\x00\x07ssh-rsa"):
+        start = 11
+        val = []
+        for _ in range(3):
+            if len(data) < (start + 4):
+                return None
+            vlen = int.from_bytes(data[start:start + 4], "big")
+            if len(data) < (start + 4 + vlen):
+                return None
+            val.append(int.from_bytes(data[start + 4:start + 4 + vlen], "big"))
+            start += 4 + vlen
+        e, n, d = val  # pylint: disable=unbalanced-tuple-unpacking
+        try:
+            return makersa(n, e, d)
+        except ValueError:
+            return None
+    return None
+
+
 def findkeys(data, perr=None, usebk=False, verbose=False):
     ckeys = []
 
@@ -564,6 +585,13 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
                     break
             if not ckey:
                 writeperr(perr, pkey, phash, verbose=verbose)
+
+    # Dropbear SSH keys
+    start = 0
+    if data.startswith(b"\x00\x00\x00\x07ssh-rsa"):
+        ckey = dropbearkey(data)
+        if ckey:
+            ckeys.append(ckey)
 
     # find binary keys
     start = 1  # 2 is earliest possible value
