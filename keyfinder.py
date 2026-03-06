@@ -466,20 +466,50 @@ def getputtykey(kstr):
     return None
 
 
+def _sshdec(indata):
+    i = 0
+    values = []
+    while i < len(indata) + 4:
+        vlen = int.from_bytes(indata[i : i + 4], "big")
+        if i + 4 + vlen > len(indata) or vlen > 2048:  # reject implausibly large values
+            break
+        values.append(indata[i + 4 : i + 4 + vlen])
+        i += 4 + vlen
+    return values
+
+
 def dropbearkey(data):
-    start = 0
-    if data.startswith(b"\x00\x00\x00\x07ssh-rsa"):
-        start = 11
-        val = []
-        for _ in range(3):
-            if len(data) < (start + 4):
-                return None
-            vlen = int.from_bytes(data[start:start + 4], "big")
-            if len(data) < (start + 4 + vlen):
-                return None
-            val.append(int.from_bytes(data[start + 4:start + 4 + vlen], "big"))
-            start += 4 + vlen
-        e, n, d = val  # pylint: disable=unbalanced-tuple-unpacking
+
+    vals = _sshdec(data)
+    if vals[0].startswith(b"ecdsa-sha2") and len(vals) >= 4:
+        if vals[1] == b"nistp256":
+            curve = ec.SECP256R1()
+        elif vals[1] == b"nistp384":
+            curve = ec.SECP384R1()
+        elif vals[1] == b"nistp521":
+            curve = ec.SECP521R1()
+        else:
+            return None
+        d = int.from_bytes(vals[3])
+        key = ec.derive_private_key(d, curve)
+        point = key.public_key().public_bytes(serialization.Encoding.X962,
+                                              serialization.PublicFormat.UncompressedPoint)
+        if point != vals[2]:
+            return None
+        return key
+    if vals[0].startswith(b"ssh-ed25519") and len(vals) >= 2:
+        if len(vals[1]) != 64:
+            return None
+        key = ed25519.Ed25519PrivateKey.from_private_bytes(vals[1][0:32])
+        pub = key.public_key().public_bytes(serialization.Encoding.Raw,
+                                            serialization.PublicFormat.Raw)
+        if pub != vals[1][32:64]:
+            return None
+        return key
+    if vals[0].startswith(b"ssh-rsa") and len(vals) >= 4:
+        e = int.from_bytes(vals[1], "big")
+        n = int.from_bytes(vals[2], "big")
+        d = int.from_bytes(vals[3], "big")
         try:
             return makersa(n, e, d)
         except ValueError:
@@ -588,7 +618,8 @@ def findkeys(data, perr=None, usebk=False, verbose=False):
 
     # Dropbear SSH keys
     start = 0
-    if data.startswith(b"\x00\x00\x00\x07ssh-rsa"):
+    if data.startswith((b"\x00\x00\x00\x07ssh-rsa", b"\x00\x00\x00\x13ecdsa-sha2",
+                        b"\x00\x00\x00\x0bssh-ed25519")):
         ckey = dropbearkey(data)
         if ckey:
             ckeys.append(ckey)
