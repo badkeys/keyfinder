@@ -39,9 +39,9 @@ Improvements / feature requests:
 * [Inconsistency with password behavior between load_pem_private_key() and
   load_ssh_private_key()](https://github.com/pyca/cryptography/issues/12070)
 * [Unexpected exception when loading unsupported key types (ValueError instead of
-  UnsupportedAlgorithm)](https://github.com/pyca/cryptography/issues/13746) (unreleased)
+  UnsupportedAlgorithm)](https://github.com/pyca/cryptography/issues/13746)
 
-Most issues fixed in 46.0.3, remaining fixes expected in 47.x.
+All issues are fixed in 47.0.0.
 
 binwalk
 =======
