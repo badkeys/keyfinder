@@ -29,6 +29,8 @@ Bugs:
   https://github.com/pyca/cryptography/issues/13050)
 * [Malformed SSH ECDSA public key can create unexpected IndexError exception](
   https://github.com/pyca/cryptography/issues/14084)
+* [cryptography.exceptions.InternalError with fuzzing example from gnutls](
+  https://github.com/pyca/cryptography/issues/15061) (unfixed)
 
 Improvements / feature requests:
 
@@ -40,8 +42,6 @@ Improvements / feature requests:
   load_ssh_private_key()](https://github.com/pyca/cryptography/issues/12070)
 * [Unexpected exception when loading unsupported key types (ValueError instead of
   UnsupportedAlgorithm)](https://github.com/pyca/cryptography/issues/13746)
-
-All issues are fixed in 47.0.0.
 
 binwalk
 =======
