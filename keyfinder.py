@@ -265,6 +265,8 @@ def getjwk(kstr):
         j = json.loads(kstr.replace("\n", ""))
     except json.decoder.JSONDecodeError:
         return False
+    if not isinstance(j, dict):
+        return False
     if {"n", "e", "d"} <= j.keys():
         if not all(isinstance(j[x], str) for x in ["n", "d", "e"]):
             return False
