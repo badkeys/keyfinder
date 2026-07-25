@@ -49,6 +49,8 @@ binwalk
 * [PNG file causes hang / infinite loop](
   https://github.com/ReFirmLabs/binwalk/issues/877)
 * [RAR file with password causes hang](https://github.com/ReFirmLabs/binwalk/issues/878)
+* [Hang / endless loop trying to unpack some Android firmware](
+  https://github.com/ReFirmLabs/binwalk/issues/962)
 
 other
 =====
