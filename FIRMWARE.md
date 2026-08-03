@@ -16,6 +16,9 @@ following workarounds help to avoid most hangs:
   released, `binwalk` should be compiled from its git repository. Some commandline
   parameters has also changed lately, `tarfinder` expects the git version.
 
+* The original `binwalk` has not seen many updates lately. You may want to switch to the
+  fork [`binwalk-ng`](https://github.com/binwalk-ng/binwalk-ng).
+
 * `sleuthkit` can hang on ISO files ([bug report](
   https://github.com/sleuthkit/sleuthkit/issues/3312)). As long as this is unfixed, I
   recommend deinstalling `sleuthkit`. (ISO images are still supported through other

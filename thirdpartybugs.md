@@ -30,7 +30,7 @@ Bugs:
 * [Malformed SSH ECDSA public key can create unexpected IndexError exception](
   https://github.com/pyca/cryptography/issues/14084)
 * [cryptography.exceptions.InternalError with fuzzing example from gnutls](
-  https://github.com/pyca/cryptography/issues/15061) (unfixed)
+  https://github.com/pyca/cryptography/issues/15061)
 
 Improvements / feature requests:
 
@@ -51,6 +51,11 @@ binwalk
 * [RAR file with password causes hang](https://github.com/ReFirmLabs/binwalk/issues/878)
 * [Hang / endless loop trying to unpack some Android firmware](
   https://github.com/ReFirmLabs/binwalk/issues/962)
+
+binwalk-ng
+==========
+
+* [Out of memory or very long runtime on some Android images](https://github.com/binwalk-ng/binwalk-ng/issues/89)
 
 other
 =====
