@@ -1,0 +1,25 @@
+#!/bin/bash
+#
+# SPDX-License-Identifier: MIT
+# Part of badkeys: https://badkeys.info/
+
+TD=$(mktemp -d)
+
+echo $TD
+mkdir $TD/u
+7z x -o$TD/u $1
+
+mkdir $TD/v
+
+ofn=$(find $TD/u/ -name \*.vdi -or -name \*.vmdk | head -n 1 | sed -e 's:.*/::g' -e 's:[^0-9A-Za-z.]:_:g')
+echo $ofn
+
+find $TD/u \( -type f -name \*.vdi -or -name \*.vmdk \) -exec 7z x -y -o$TD/v {} \;
+
+mkdir $TD/w
+
+find $TD/v -type f -name \*.img -exec 7z x -y -o$TD/w {} \;
+
+keyfinder -D dups $TD/w $TD/v -o keys/$ofn
+
+rm -rf $TD

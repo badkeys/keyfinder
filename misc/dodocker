@@ -1,0 +1,9 @@
+#!/bin/bash
+#
+# SPDX-License-Identifier: MIT
+# Part of badkeys: https://badkeys.info/
+
+# needs https://github.com/jjlin/docker-image-extract
+docker-image-extract $1
+keyfinder output -o $1-keys
+rm -r output
