@@ -3,16 +3,6 @@
 # SPDX-License-Identifier: MIT
 # Part of badkeys: https://badkeys.info/
 
-if [[ $1 == https://github.com/* ]]; then
-	repo=$(echo $1 | sed -e 's!^https://github.com/!!g')
-	size=$(curl -s https://api.github.com/repos/$repo | jq .size)
-	if [ $size -ge 1000000 ]; then
-		echo "Skipping large github repo $repo" >>LARGE.log
-		echo "Skipping large github repo $repo"
-		exit 0
-	fi
-fi
-
 gitkeyfinder -D dups $1
 
 if [ $? -ne 0 ]; then
