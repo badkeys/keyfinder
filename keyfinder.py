@@ -101,8 +101,7 @@ def filter_fixpem(inkey):
     for line in klines[1:-2]:
         if len(line) == 64:
             okey.append(line)
-    okey.append(klines[-2])
-    okey.append(klines[-1])
+    okey.extend((klines[-2], klines[-1]))
     return "\n".join(okey)
 
 
@@ -282,7 +281,7 @@ def getjwk(kstr):
     if {"x", "d", "crv"} <= j.keys():
         if not all(isinstance(j[x], str) for x in ["x", "d", "crv"]):
             return False
-        if j["crv"] in ["Ed25519", "X25519", "Ed448", "X448"]:
+        if j["crv"] in {"Ed25519", "X25519", "Ed448", "X448"}:
             try:
                 d = ub64tobin(j["d"])
                 x = ub64tobin(j["x"])
@@ -354,7 +353,7 @@ def getxmlkey(kstr):
         e = tree.find("{*}PublicExponent")
     if d is None:
         d = tree.find("{*}PrivateExponent")
-    if None in [n, d, e] or None in [n.text, d.text, e.text]:
+    if None in {n, d, e} or None in {n.text, d.text, e.text}:
         return None
     n = n.text.replace(" ", "").replace("\n", "").replace("\r", "")
     e = e.text.replace(" ", "").replace("\n", "").replace("\r", "")

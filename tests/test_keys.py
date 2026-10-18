@@ -1,5 +1,6 @@
 import binascii
 import os
+import pathlib
 import re
 import unittest
 
@@ -18,10 +19,9 @@ class TestKeys(unittest.TestCase):
             keyfinder.dups = set()
             keyfinder.pdups = set()
 
-            with open(f"{TDPATH}/valid/{fn}", "rb") as f:
-                data = f.read()
+            data = pathlib.Path(f"{TDPATH}/valid/{fn}").read_bytes()
             expect = set()
-            for r in re.findall(b"spkisha256:[0-9a-f]*", data):
+            for r in re.findall(rb"spkisha256:[0-9a-f]*", data):
                 expect.add(binascii.unhexlify(r[11:]))
             keys = keyfinder.findkeys(data, usebk=False)
             self.assertTrue(keys, msg=f"Error with {fn}")
@@ -33,7 +33,6 @@ class TestKeys(unittest.TestCase):
         # we should not import, but they should not cause
         # crashes or unhandled exceptions.
         for fn in os.listdir(f"{TDPATH}/invalid/"):
-            with open(f"{TDPATH}/invalid/{fn}", "rb") as f:
-                data = f.read()
+            data = pathlib.Path(f"{TDPATH}/invalid/{fn}").read_bytes()
             keys = keyfinder.findkeys(data, usebk=False)
             self.assertEqual(keys, {})
