@@ -5,4 +5,4 @@ Part of the support tooling for badkeys.
 
 ## about
 
-[badkeys web page](https://badkeys.info) is a project by [Hanno Böck](https://hboeck.de).
+[badkeys](https://badkeys.info) is a project by [Hanno Böck](https://hboeck.de).
