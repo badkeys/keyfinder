@@ -65,7 +65,7 @@ Furthermore, you should have `sasquatch` installed, a modified version of `unsqu
 from `squashfs-tools`. Unfortunately, the situation is rather confusing. There [exists a
 version](https://github.com/onekey-sec/sasquatch) based on `squashfs-tools` 4.5, but it
 does not support as many formats as the old version ([see also](
-https://github.com/onekey-sec/sasquatch/issues/19).
+https://github.com/onekey-sec/sasquatch/issues/19)).
 
 The old version is provided as [a patch and build script](
 https://github.com/devttys0/sasquatch) on top of `squashfs-tools` 4.3. But it requires
